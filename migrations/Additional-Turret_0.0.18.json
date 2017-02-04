@@ -1,0 +1,99 @@
+{
+"entity":
+	[
+		["rapid-cannon-turret", "at-cannon-turret-mk1"],
+		["cannon-turret", "at-cannon-turret-mk2"],
+		["cannon-turret-mk2", "at-cannon-turret-mk2"],
+		["rapid-rocket-turret", "at-rocket-turret-mk1"],
+		["rocket-turret", "at-rocket-turret-mk2"],
+		["rocket-turret-mk2", "at-rocket-turret-mk2"],
+		
+		["acidthrower-turret", "at-acidthrower-turret"],
+		
+		["beam-turret-mk1", "at-beam-turret-mk1"],
+		["beam-turret-mk2", "at-beam-turret-mk2"],
+		["laser-advanced", "at-advanced-laser"],
+		
+		["Artillery_mk1", "at_Artillery_mk1"],
+		["Artillery_mk2_area", "at_Artillery_mk2_area"],
+		["Artillery_mk2", "at_Artillery_mk2"],
+		["Artillery_mk2i", "at_Artillery_mk2i"],
+		["Artillery_mk2r", "at_Artillery_mk2r"],
+		
+		["explosion-wall", "at-explosion-wall"],
+		["physical-wall", "at-physical-wall"],
+		["acid-wall", "at-acid-wall"],
+		["all-wall", "at-all-wall"],
+		["explosion-gate", "at-explosion-gate"],
+		["physical-gate", "at-physical-gate"],
+		["acid-gate", "at-acid-gate"],
+		["all-gate", "at-all-gate"]
+	],
+"item":
+	[
+		["artillery-test-shell", "Artillery_mk1_Ammo"],
+		
+		["rapid-cannon-turret", "at-cannon-turret-mk1"],
+		["cannon-turret", "at-cannon-turret-mk2"],
+		["cannon-turret-mk2", "at-cannon-turret-mk2"],
+		["rapid-rocket-turret", "at-rocket-turret-mk1"],
+		["rocket-turret", "at-rocket-turret-mk2"],
+		["rocket-turret-mk2", "at-rocket-turret-mk2"],
+		
+		["acidthrower-turret", "at-acidthrower-turret"],
+		
+		["beam-turret-mk1", "at-beam-turret-mk1"],
+		["beam-turret-mk2", "at-beam-turret-mk2"],
+		["laser-advanced", "at-advanced-laser"],
+		
+		["Artillery_mk1", "at_Artillery_mk1"],
+		["Artillery_mk2_area", "at_Artillery_mk2_area"],
+		["Artillery_mk2", "at_Artillery_mk2"],
+		["Artillery_mk2i", "at_Artillery_mk2i"],
+		["Artillery_mk2r", "at_Artillery_mk2r"],
+		
+		["explosion-wall", "at-explosion-wall"],
+		["physical-wall", "at-physical-wall"],
+		["acid-wall", "at-acid-wall"],
+		["all-wall", "at-all-wall"],
+		["explosion-gate", "at-explosion-gate"],
+		["physical-gate", "at-physical-gate"],
+		["acid-gate", "at-acid-gate"],
+		["all-gate", "at-all-gate"]
+	],
+"recipe":
+	[
+		["artillery-test-shell", "Artillery_mk1_Ammo"],
+		
+		["rapid-cannon-turret", "at-cannon-turret-mk1"],
+		["cannon-turret-mk2", "at-cannon-turret-mk2"],
+		["rapid-rocket-turret", "at-rocket-turret-mk1"],
+		["rocket-turret-mk2", "at-rocket-turret-mk2"],
+		
+		["acidthrower-turret", "at-acidthrower-turret"],
+		
+		["beam-turret-mk1", "at-beam-turret-mk1"],
+		["beam-turret-mk2", "at-beam-turret-mk2"],
+		["laser-advanced", "at-advanced-laser"],
+		
+		["Artillery_mk1", "at_Artillery_mk1"],
+		["Artillery_mk2_area", "at_Artillery_mk2_area"],
+		["Artillery_mk2", "at_Artillery_mk2"],
+		["Artillery_mk2i", "at_Artillery_mk2i"],
+		["Artillery_mk2r", "at_Artillery_mk2r"],
+		
+		["explosion-wall", "at-explosion-wall"],
+		["physical-wall", "at-physical-wall"],
+		["acid-wall", "at-acid-wall"],
+		["all-wall", "at-all-wall"],
+		["explosion-gate", "at-explosion-gate"],
+		["physical-gate", "at-physical-gate"],
+		["acid-gate", "at-acid-gate"],
+		["all-gate", "at-all-gate"]
+	],
+"technology":
+	[
+		["cannon-turret", "turret-mk1-unlock"],
+		["turret-mk2", "turret-mk2-unlock"]
+	]
+}
