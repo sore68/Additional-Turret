@@ -1,0 +1,10 @@
+{
+  "name": "Additional-Turret",
+  "version": "0.1.0",
+  "factorio_version": "0.14",
+  "title": "Additional turrets",
+  "author": "sore68",
+  "homepage": "https://forums.factorio.com/viewtopic.php?f=93&t=30865",
+  "description": "Adds more turrets and shells.",
+  "dependencies": ["base >= 0.14.0", "? Macromanaged_Turrets"]
+}
