@@ -17,6 +17,16 @@ local at_range = {}
 -- at_A12	{entities = {base = entity, turret = New_TT, inventory = New_TI, skill = New_TR}, state = {delay = 3, inv_sync = 0}, etc = {{1, 0, 0}, 0}}
 -- at_LC	{entities = {base = entity, turret = New_TT, inventory = New_TI, skill = New_TL}, state = {delay = 3, inv_sync = 0}, etc = nil}
 -- at_CR	{entities = {base = entity, turret = New_T2, inventory = New_I2, skill = nil}, state = {delay = 3, inv_sync = {0, 0}}, etc = 0}
+
+
+-- {base / {inv} / {spe}} / {delay} / {etc}
+-- base = base
+-- inv = inv_1, inv_2 ...
+-- spe = spe_1, spe_2 ...
+
+-- at = {entities = {base / {inv1} / {spe1}} / delay = delay / etc = {{area} / {detector}}}
+-- lc = {entities = {base / {inv1} / {spe4}} / delay = delay / etc = {}}
+-- cr = {entities = {base / {inv2} / {spe2}} / delay = delay / etc = {{sync} / {reload_state}}}
 ------------------------------
 script.on_load(function()
 
@@ -156,13 +166,13 @@ script.on_event(defines.events.on_tick, function(event)
 		if global.AT_Table ~= nil then
 			for index, turrets in pairs(global.AT_Table) do
 				if turrets.entities.base.valid then
-					Turrets_Health_Check(turrets)
-					turrets.state.delay = turrets.state.delay - 1
-					if turrets.state.delay <= 0 and turrets.entities.base.valid then
-						Turrets_Action(turrets)
-					end
+					-- Turrets_Health_Check(turrets)
+					-- turrets.state.delay = turrets.state.delay - 1
+					-- if turrets.state.delay <= 0 and turrets.entities.base.valid then
+						-- Turrets_Action(turrets)
+					-- end
 				else
-					Turrets_Destroy(turrets)
+					-- Turrets_Destroy(turrets)
 					
 					table.remove(global.AT_Table, index)
 					if #global.AT_Table == 0 then
@@ -572,140 +582,82 @@ end
 ------------------------------
 function On_Built(event)
 	
-	local entity = event.created_entity
-	local surface = entity.surface
-	local force = entity.force
-	local position = entity.position
-	local check = 0
-	
-	if global.AT_Table == nil then
-		global.AT_Table = {}
-	end
-	if global.limit_builder == nil then
-		global.limit_builder = {50, 10, 100, 100}
-	end
-	-- b/	t/	i/	s
-	-- b/	t/	i/	r	at_A1_
-	-- b/	t/	i/	r	at_A2_
-	-- b/	t/	i/	l/c	at_LC_
-	-- b/	cr/	ii/	nil	at_CR_
-	
-	
-	-- Artillery has been built
-	if entity.name == "at_A1_b" or entity.name == "at_A2_b" then
-		local number = tonumber(string.sub(entity.name, string.find(entity.name, "%d")))
-		check = limit_counter(entity.name)
-		if check >= global.limit_builder[number] then
-			overflow(event, number)
-		else
-			local New_TT = surface.create_entity({name = "at_A"..number.."_t", position = position, direction = entity.direction, force = force})
-			local New_TI = surface.create_entity({name = "at_A"..number.."_i", position = position, direction = entity.direction, force = force})
-			local New_TR = surface.create_entity({name = "at_A"..number.."_r", position = position, direction = entity.direction, force = force})
-			New_TI.set_request_slot({name = ammo_list.artillery_shells[number][1], count = 5}, 1)
-			
-			entity.destructible = false
-			entity.operable = false
-			entity.minable = true
-			
-			New_TT.destructible = true
-			New_TT.operable = false
-			New_TT.minable = false
-			
-			New_TI.destructible = false
-			New_TI.operable = false
-			New_TI.minable = false
-			
-			New_TR.destructible = true
-			New_TR.operable = false
-			New_TR.minable = false
-			
-			table.insert(global.AT_Table, {entities = {base = entity, turret = New_TT, inventory = New_TI, skill = New_TR}, state = {delay = 3, inv_sync = 0}, etc = {{1, 0, 0}, 0}})
-			-- global.AT_Table turrets(4 turret entity), state(delay, inventory sync), etc(scan(D, L, S), enemy)
+	local base = event.created_entity
+	local number = {}
+	if string.sub(base.name, 1, 3) == "at_" and string.sub(base.name, 6, 7) == "_b" then
+		if string.sub(base.name, 4, 5) == "A1" then
+			number = {1, "at", "Artillery_mk1_Ammo"}
+		elseif string.sub(base.name, 4, 5) == "A2" then
+			number = {2, "at", "Artillery_mk2_Ammo"}
+		elseif string.sub(base.name, 4, 5) == "LC" then
+			number = {3, "lc"}
+		elseif string.sub(base.name, 4, 5) == "CR" then
+			number = {4, "cr"}
 		end
 		
-	elseif entity.name == "at_LC_b" then
-		check = limit_counter(entity.name)
-		if check >= global.limit_builder[3] then
-			overflow(event, 3)
-		else
-			local New_TT = surface.create_entity({name = "at_LC".."_t", position = position, direction = entity.direction, force = force})
-			local New_TI = surface.create_entity({name = "at_LC".."_i", position = position, direction = entity.direction, force = force})
-			New_TI.set_request_slot({name = ammo_setting_table[1].LCT, count = ammo_setting_table[4].LCT}, 1)
-			
-			local i, j, New_TL = 1, 1, {}
-			for k = 1, 4 do
-				if k%2 == 1 then i = i * -1
-				else j = j * -1
-				end
-				local LC_offset = 1.7
-				local position_offset = {position.x + LC_offset * i , position.y + LC_offset * j }
-				local _TL = surface.create_entity({name = "at_LC".."_l", position = position_offset, direction = entity.direction, force = force})
-				
-				_TL.destructible = true
-				_TL.operable = false
-				_TL.minable = false
-				
-				table.insert(New_TL, _TL)
-			end
-			
-			entity.destructible = false
-			entity.operable = false
-			entity.minable = true
-			
-			New_TT.destructible = false
-			New_TT.operable = false
-			New_TT.minable = false
-			
-			New_TI.destructible = false
-			New_TI.operable = true
-			New_TI.minable = false
-			
-			table.insert(global.AT_Table, {entities = {base = entity, turret = New_TT, inventory = New_TI, skill = New_TL}, state = {delay = 3, inv_sync = 0}, etc = nil})
-			-- global.AT_Table turrets(4 turret entity), state(delay, inventory sync), etc
-		end
+		local surface = base.surface
+		local force = base.force
+		local position = base.position
+		local direction = base.direction
+		local check = 0
 		
-	elseif entity.name == "at_CR_b" then
-		check = limit_counter(entity.name)
-		if check >= global.limit_builder[4] then
-			overflow(event, 4)
+		if global.AT_Table == nil then
+			global.AT_Table = {}
+		end
+		if global.limit_builder == nil then
+			global.limit_builder = {50, 10, 100, 100}
+		end
+		local permission = {{"destructible", "minable", "operable"},
+						at = {base = {false, true, false}, inv = {false, false, false}, spe = {true, false, false}, count_t = {1, 1}, name = {number[3] or nil}, count_a = {5}},
+						lc = {base = {false, true, false}, inv = {false, false, true}, spe = {true, false, false}, count_t = {1, 4}, name = {ammo_setting_table[1].LCT}, count_a = {ammo_setting_table[4].LCT}},
+						cr = {base = {false, true, false}, inv = {false, false, true}, spe = {true, false, false}, count_t = {2, 2}, name = {ammo_setting_table[1].CRC, ammo_setting_table[1].CRR}, count_a = {ammo_setting_table[4].CRC, ammo_setting_table[4].CRR}}
+					}
+		
+		check = limit_counter(base.name)
+		if check >= global.limit_builder[number[1]] then
+			overflow(event, number[1])
 		else
+			local inv, spe = {}, {}
+			local _i, _j = 1, 1
 			
-			local New_TT, New_TI = {}, {}
-			
-			for k = 1, 2 do
-				local i = 1
-				if k%2 == 1 then
-					i = i * -1
-				end
-				local LC_offset = 1.5
-				local position_offset = {position.x + LC_offset * i , position.y + 1.5 }
-				local _TI = surface.create_entity({name = "at_CR".."_i"..k, position = position_offset, direction = entity.direction, force = force})
-				local _TT = surface.create_entity({name = "at_CR".."_t"..k, position = position, direction = entity.direction, force = force})
-				
-				_TI.destructible = false
-				_TI.operable = true
-				_TI.minable = false
-				
-				_TT.destructible = true
-				_TT.operable = false
-				_TT.minable = false
-				
-				if k == 1 then
-					_TI.set_request_slot({name = ammo_setting_table[1].CRC, count = ammo_setting_table[4].CRC}, 1)
-				else
-					_TI.set_request_slot({name = ammo_setting_table[1].CRR, count = ammo_setting_table[4].CRR}, 1)
-				end
-				
-				table.insert(New_TT, _TT)
-				table.insert(New_TI, _TI)
+			-- PERMISSION
+			for i = 1, 3 do
+				base[permission[1][i]] = permission.at.base[i]
 			end
 			
-			entity.destructible = false
-			entity.operable = false
-			entity.minable = true
+			_i, _j = 1, 1
+			for i = 1, permission[number[2]].count_t[1] do
+				position = base.position
+				if number[1] == 4 then
+					_i = _i * -1
+					local CR_offset = 1.5
+					position = {position.x + CR_offset * _i , position.y + 1.5 }
+				end
+				local _inv = surface.create_entity({name = string.format("%s%s%d", string.sub(base.name, 1, 5), "_i", i), position = position, direction = direction, force = force})
+				_inv.set_request_slot({name = permission[number[2]].name[i], count = permission[number[2]].count_a[i]}, 1)
+				for j = 1, 3 do
+					_inv[permission[1][j]] = permission[number[2]].inv[i]
+				end
+				table.insert(inv, _inv)
+			end
 			
-			table.insert(global.AT_Table, {entities = {base = entity, turret = New_TT, inventory = New_TI, skill = nil}, state = {delay = 3, inv_sync = {0, 0}}, etc = 0})
-			-- global.AT_Table turrets(4 turret entity), state(delay, inventory sync), etc(active)
+			_i, _j = 1, 1
+			for i = 1, permission[number[2]].count_t[2] do
+				position = base.position
+				if number[1] == 3 then
+					if i%2 == 1 then _i = _i * -1
+					else _j = _j * -1 end
+					local LC_offset = 1.7
+					position = {position.x + LC_offset * _i , position.y + LC_offset * _j}
+				end
+				local _spe = surface.create_entity({name = string.format("%s%s%d", string.sub(base.name, 1, 5), "_s", i), position = position, direction = direction, force = force})
+				for j = 1, 3 do
+					_spe[permission[1][j]] = permission[number[2]].spe[i]
+				end
+				table.insert(spe, _spe)
+			end
+			table.insert(global.AT_Table, {entities = {base = base, inventory = inv, special = spe}, delay = 3, etc = {}})
+			--
 		end
 	end
 end

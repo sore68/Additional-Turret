@@ -78,6 +78,32 @@ return
 }
 end
 
+function turret_copse(inputs)
+return
+{
+	type = "container",
+	name = inputs.name,
+	icon = "__Additional-Turret__/graphics/icon/turret-cr-icon.png",
+	flags = {"placeable-neutral", "player-creation", "placeable-off-grid"},
+	selectable_in_game = false,
+	order = "b[turret]-c[base]-e[mk3]",
+	max_health = 1000 * 1.3,
+	collision_box = {{-1.7, -1.7 }, {1.7, 1.7}},
+	selection_box = {{-2, -2 }, {2, 2}},
+	fast_replaceable_group = "container",
+	inventory_size = 0,
+	picture = {
+		filename = "__base__/graphics/entity/remnants/big-remnants.png",
+		priority = "extra-high",
+		width = 109,
+		height = 102,
+		frame_count = 1,
+		direction_count = 4,
+		shift = {0, 0}
+	},
+}
+end
+
 -- local turret_gun_shift = {
 	-- north = {0, -1},
 	-- east = {1, 0},
@@ -122,7 +148,7 @@ data:extend({
 },
 {
 	type = "ammo-turret",
-	name = "at_CR_t1",
+	name = "at_CR_s1",
 	icon = "__Additional-Turret__/graphics/icon/turret-cr-icon.png",
 	-- flags = {"placeable-neutral", "player-creation", "not-repairable"},
 	flags = {"placeable-neutral", "placeable-player", "player-creation"},
@@ -171,7 +197,7 @@ data:extend({
 },
 {
 	type = "ammo-turret",
-	name = "at_CR_t2",
+	name = "at_CR_s2",
 	icon = "__Additional-Turret__/graphics/icon/turret-cr-icon.png",
 	-- flags = {"placeable-player", "player-creation"},
 	flags = {"placeable-neutral", "placeable-player", "player-creation"},
@@ -260,31 +286,13 @@ data:extend({
 		shift = {0.09375, 0}
 		-- shift = {0.59375, 1.5}
 	},
-},
-{
-	type = "container",
-	name = "at_CR_c",
-	icon = "__Additional-Turret__/graphics/icon/turret-cr-icon.png",
-	flags = {"placeable-neutral", "player-creation", "placeable-off-grid"},
-	selectable_in_game = false,
-	order = "b[turret]-c[base]-e[mk3]",
-	max_health = 1000 * 1.3,
-	collision_box = {{-1.7, -1.7 }, {1.7, 1.7}},
-	selection_box = {{-2, -2 }, {2, 2}},
-	fast_replaceable_group = "container",
-	inventory_size = 0,
-	picture = {
-		filename = "__base__/graphics/entity/remnants/big-remnants.png",
-		priority = "extra-high",
-		width = 109,
-		height = 102,
-		frame_count = 1,
-		direction_count = 4,
-		shift = {0, 0}
-	},
-},
+}
 })
-
+for i = 1, 2 do
+	data:extend({
+		turret_copse{name = "at_CR_c"..i}
+	})
+end
 
 --item
 data:extend({

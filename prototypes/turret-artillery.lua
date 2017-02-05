@@ -153,7 +153,7 @@ data:extend({
 
 {
 	type = "logistic-container",
-	name = "at_A1_i",
+	name = "at_A1_i1",
 	icon = "__Additional-Turret__/graphics/icon/turret-artillery-big-mk1-icon.png",
 	flags = {"placeable-neutral", "placeable-player", "player-creation", "placeable-off-grid"},
 	selectable_in_game = false,
@@ -166,12 +166,12 @@ data:extend({
 	fast_replaceable_group = "container",
 	inventory_size = 1,
 	logistic_mode = "requester",
-	picture = blank{},
+	picture = at_A1_turret_attack{},
 },
 
 {
 	type = "radar",
-	name = "at_A1_r",
+	name = "at_A1_s1",
 	icon = "__Additional-Turret__/graphics/icon/turret-artillery-big-mk1-icon.png",
 	flags = {"placeable-neutral", "player-creation"},
 	selectable_in_game = false,
@@ -205,7 +205,7 @@ data:extend({
 },
 {
 	type = "container",
-	name = "at_A1_c",
+	name = "at_A1_c1",
 	icon = "__Additional-Turret__/graphics/icon/turret-artillery-big-mk1-icon.png",
 	flags = {"placeable-neutral", "player-creation", "placeable-off-grid"},
 	selectable_in_game = false,
@@ -301,7 +301,7 @@ data:extend({
 
 {
 	type = "logistic-container",
-	name = "at_A2_i",
+	name = "at_A2_i1",
 	icon = "__Additional-Turret__/graphics/icon/turret-artillery-big-mk2-icon.png",
 	flags = {"placeable-neutral", "placeable-player", "player-creation", "placeable-off-grid"},
 	selectable_in_game = false,
@@ -314,12 +314,12 @@ data:extend({
 	fast_replaceable_group = "container",
 	inventory_size = 1,
 	logistic_mode = "requester",
-	picture = blank{},
+	picture = at_A2_turret_attack{},
 },
 
 {
 	type = "radar",
-	name = "at_A2_r",
+	name = "at_A2_s1",
 	icon = "__Additional-Turret__/graphics/icon/turret-artillery-big-mk2-icon.png",
 	flags = {"placeable-neutral", "player-creation"},
 	selectable_in_game = false,
@@ -353,7 +353,7 @@ data:extend({
 },
 {
 	type = "container",
-	name = "at_A2_c",
+	name = "at_A2_c1",
 	icon = "__Additional-Turret__/graphics/icon/turret-artillery-big-mk2-icon.png",
 	flags = {"placeable-neutral", "player-creation", "placeable-off-grid"},
 	selectable_in_game = false,

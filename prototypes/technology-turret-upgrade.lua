@@ -123,8 +123,8 @@ for i = 1, 6 do
 					prerequisites = {"piranha-research"},
 					count = 50, times = 30, order = "e-o-p-a"},
 			damage_upgrade_2{name = "turret-mk3-damage-1", icon = tech_3_icon,
-					turret_id_1 = "at_CR_t1", modifier_1 = 0.2,
-					turret_id_2 = "at_CR_t2", modifier_2 = 0.2,
+					turret_id_1 = "at_CR_s1", modifier_1 = 0.2,
+					turret_id_2 = "at_CR_s2", modifier_2 = 0.2,
 					prerequisites = {"turret-mk3-unlock"},
 					count = 100, times = 30, order = "e-o-q-e"},
 		})
@@ -146,8 +146,8 @@ for i = 1, 6 do
 					prerequisites = {"thrower-turret-damage-"..j},
 					count = 35*(2^j), times = 30*i, order = "e-o-p-b"},
 			damage_upgrade_2{name = "turret-mk3-damage-"..i, icon = tech_3_icon,
-					turret_id_1 = "at_CR_t1", modifier_1 = 0.2,
-					turret_id_2 = "at_CR_t2", modifier_2 = 0.2,
+					turret_id_1 = "at_CR_s1", modifier_1 = 0.2,
+					turret_id_2 = "at_CR_s2", modifier_2 = 0.2,
 					prerequisites = {"turret-mk3-damage-"..j},
 					count = 50*(2^j), times = 30*i, order = "e-o-q-f"},
 		})

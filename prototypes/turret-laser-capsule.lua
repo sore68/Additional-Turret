@@ -148,108 +148,37 @@ return
 }
 end
 
-
-data:extend({
+function laser_copse(inputs)
+return
 {
-	type = "ammo-turret",
-	name = "at_LC_b",
+	type = "container",
+	name = inputs.name,
 	icon = "__Additional-Turret__/graphics/icon/turret-lc-icon.png",
-	flags = {"placeable-neutral", "placeable-player", "player-creation", "not-repairable"},
-	minable = {mining_time = 1.5, result = "at_LC_b"},
-	order = "b[turret]-b[laser-turret]-d[at_LC_base]",
-	max_health = 2000,
-	corpse = "big-remnants",
-	dying_explosion = "massive-explosion",
-	
-	collision_box = {{-3.2, -3.2 }, {3.2, 3.2}},
-	selection_box = {{-3.5, -3.5 }, {3.5, 3.5}},
-	
-	folding_speed = 0.04,
-	inventory_size = 1,
-	automated_ammo_count = 10,
-	
-	folded_animation = blank{},
-	folding_animation = blank{},
-	base_picture = at_LC_base{},
-	
-	vehicle_impact_sound =	{ filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
-	
-	attack_parameters =
-	{
-		type = "projectile",
-		ammo_category = "dummy",
-		cooldown = 120,
-		range = 25,
-	},
-
-	call_for_help_radius = 50
-},
-{
-	type = "ammo-turret",
-	name = "at_LC_t",
-	icon = "__Additional-Turret__/graphics/icon/turret-lc-icon.png",
-	flags = {"placeable-neutral", "player-creation"},
+	flags = {"placeable-neutral", "player-creation", "placeable-off-grid"}, -- "not-repairable"
 	selectable_in_game = false,
 	order = "b[turret]-b[laser-turret]-d[at_LC_base]",
-	max_health = 700,
-	corpse = "big-remnants",
-	dying_explosion = "massive-explosion",
-	
+	max_health = 500 * 1.3,
 	collision_box = {{ -0.5, -0.5}, {0.5, 0.5}},
-	-- selection_box = {{-3.5, -3.5 }, {3.5, 3.5}},
-	
-	rotation_speed = 0.008,
-	preparing_speed = 0.04,
-	folding_speed = 0.04,
-	inventory_size = 1,
-	automated_ammo_count = 10,
-	attacking_speed = 0.1,
-	
-	folded_animation = at_LC_turret_door_opening{},
-	preparing_animation = at_LC_turret_door_opening{},
-	prepared_animation = at_LC_turret_door_open{},
-	attacking_animation = at_LC_turret_door_open{},
-	folding_animation = at_LC_turret_door_opening{ run_mode = "backward"},
-	-- base_picture = at_LC_base{},
-	
-	vehicle_impact_sound =	{ filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
-	
-	attack_parameters =
-	{
-		type = "projectile",
-		ammo_category = "dummy",
-		cooldown = 2*60,
-		range = 25,
-	},
-
-	call_for_help_radius = 75
-},
-{
-	type = "logistic-container",
-	name = "at_LC_i",
-	icon = "__Additional-Turret__/graphics/icon/turret-lc-icon.png",
-	flags = {"placeable-neutral", "placeable-player", "player-creation"},
-	order = "b[turret]-b[laser-turret]-d[at_LC_base]",
-	max_health = 300,
-	corpse = "big-remnants",
-	dying_explosion = "massive-explosion",
-	collision_box = {{-0.5, -0.5 }, {0.5, 0.5}}, --{{-3.2, -3.2 }, {3.2, 3.2}},
-	selection_box = {{-0.5, -0.5 }, {0.5, 2.5}},
+	selection_box = {{ -1, -1}, {1, 1}},
 	fast_replaceable_group = "container",
-	inventory_size = 1,
-	logistic_mode = "requester",
-	-- picture = blank{},
+	inventory_size = 0,
 	picture = {
-		filename = "__base__/graphics/entity/logistic-chest/logistic-chest-requester.png",
+		filename = "__base__/graphics/entity/remnants/medium-remnants.png",
 		priority = "extra-high",
-		width = 38,
-		height = 32,
-		shift = {0.09375, 2}
-	}
-},
+		width = 94,
+		height = 82,
+		frame_count = 1,
+		direction_count = 4,
+		shift = {0, 0}
+	},
+}
+end
+
+function laser_turret(inputs)
+return
 {
 	type = "electric-turret",
-	name = "at_LC_l",
+	name = inputs.name,
 	icon = "__Additional-Turret__/graphics/icon/turret-lc-icon.png",
 	flags = {"placeable-neutral", "player-creation", "placeable-off-grid"},
 	selectable_in_game = false,
@@ -371,30 +300,116 @@ data:extend({
 		sound = make_laser_sounds()
 	},
 	call_for_help_radius = 30
+}
+end
+
+
+
+data:extend({
+{
+	type = "ammo-turret",
+	name = "at_LC_b",
+	icon = "__Additional-Turret__/graphics/icon/turret-lc-icon.png",
+	flags = {"placeable-neutral", "placeable-player", "player-creation", "not-repairable"},
+	minable = {mining_time = 1.5, result = "at_LC_b"},
+	order = "b[turret]-b[laser-turret]-d[at_LC_base]",
+	max_health = 2000,
+	corpse = "big-remnants",
+	dying_explosion = "massive-explosion",
+	
+	collision_box = {{-3.2, -3.2 }, {3.2, 3.2}},
+	selection_box = {{-3.5, -3.5 }, {3.5, 3.5}},
+	
+	folding_speed = 0.04,
+	inventory_size = 1,
+	automated_ammo_count = 10,
+	
+	folded_animation = blank{},
+	folding_animation = blank{},
+	base_picture = at_LC_base{},
+	
+	vehicle_impact_sound =	{ filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
+	
+	attack_parameters =
+	{
+		type = "projectile",
+		ammo_category = "dummy",
+		cooldown = 120,
+		range = 25,
+	},
+
+	call_for_help_radius = 50
 },
 {
-	type = "container",
-	name = "at_LC_c",
+	type = "ammo-turret",
+	name = "at_LC_t",
 	icon = "__Additional-Turret__/graphics/icon/turret-lc-icon.png",
-	flags = {"placeable-neutral", "player-creation", "placeable-off-grid"}, -- "not-repairable"
+	flags = {"placeable-neutral", "player-creation"},
 	selectable_in_game = false,
 	order = "b[turret]-b[laser-turret]-d[at_LC_base]",
-	max_health = 500 * 1.3,
+	max_health = 700,
+	corpse = "big-remnants",
+	dying_explosion = "massive-explosion",
+	
 	collision_box = {{ -0.5, -0.5}, {0.5, 0.5}},
-	selection_box = {{ -1, -1}, {1, 1}},
-	fast_replaceable_group = "container",
-	inventory_size = 0,
-	picture = {
-		filename = "__base__/graphics/entity/remnants/medium-remnants.png",
-		priority = "extra-high",
-		width = 94,
-		height = 82,
-		frame_count = 1,
-		direction_count = 4,
-		shift = {0, 0}
+	-- selection_box = {{-3.5, -3.5 }, {3.5, 3.5}},
+	
+	rotation_speed = 0.008,
+	preparing_speed = 0.04,
+	folding_speed = 0.04,
+	inventory_size = 1,
+	automated_ammo_count = 10,
+	attacking_speed = 0.1,
+	
+	folded_animation = at_LC_turret_door_opening{},
+	preparing_animation = at_LC_turret_door_opening{},
+	prepared_animation = at_LC_turret_door_open{},
+	attacking_animation = at_LC_turret_door_open{},
+	folding_animation = at_LC_turret_door_opening{ run_mode = "backward"},
+	-- base_picture = at_LC_base{},
+	
+	vehicle_impact_sound =	{ filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
+	
+	attack_parameters =
+	{
+		type = "projectile",
+		ammo_category = "dummy",
+		cooldown = 2*60,
+		range = 25,
 	},
+
+	call_for_help_radius = 75
+},
+{
+	type = "logistic-container",
+	name = "at_LC_i1",
+	icon = "__Additional-Turret__/graphics/icon/turret-lc-icon.png",
+	flags = {"placeable-neutral", "placeable-player", "player-creation"},
+	order = "b[turret]-b[laser-turret]-d[at_LC_base]",
+	max_health = 300,
+	corpse = "big-remnants",
+	dying_explosion = "massive-explosion",
+	collision_box = {{-0.5, -0.5 }, {0.5, 0.5}}, --{{-3.2, -3.2 }, {3.2, 3.2}},
+	selection_box = {{-0.5, -0.5 }, {0.5, 2.5}},
+	fast_replaceable_group = "container",
+	inventory_size = 1,
+	logistic_mode = "requester",
+	picture = at_LC_turret_door_open{},
+	-- picture = {
+		-- filename = "__base__/graphics/entity/logistic-chest/logistic-chest-requester.png",
+		-- priority = "extra-high",
+		-- width = 38,
+		-- height = 32,
+		-- shift = {0.09375, 2}
+	-- }
 }
 })
+for i = 1, 4 do
+	data:extend({
+		laser_turret{name = "at_LC_s"..i},
+		laser_copse{name = "at_LC_c"..i}
+	})
+end
 
 
 --item
