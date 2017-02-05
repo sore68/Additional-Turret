@@ -154,12 +154,12 @@ return
 	type = "container",
 	name = inputs.name,
 	icon = "__Additional-Turret__/graphics/icon/turret-lc-icon.png",
-	flags = {"placeable-neutral", "player-creation", "placeable-off-grid"}, -- "not-repairable"
+	flags = {"placeable-neutral", "player-creation", "placeable-off-grid"},
 	selectable_in_game = false,
 	order = "b[turret]-b[laser-turret]-d[at_LC_base]",
 	max_health = 500 * 1.3,
 	collision_box = {{ -0.5, -0.5}, {0.5, 0.5}},
-	selection_box = {{ -1, -1}, {1, 1}},
+	-- selection_box = {{ -1, -1}, {1, 1}},
 	fast_replaceable_group = "container",
 	inventory_size = 0,
 	picture = {

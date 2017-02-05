@@ -166,13 +166,13 @@ script.on_event(defines.events.on_tick, function(event)
 		if global.AT_Table ~= nil then
 			for index, turrets in pairs(global.AT_Table) do
 				if turrets.entities.base.valid then
-					-- Turrets_Health_Check(turrets)
-					-- turrets.state.delay = turrets.state.delay - 1
-					-- if turrets.state.delay <= 0 and turrets.entities.base.valid then
+					Turrets_Health_Check(turrets)
+					-- turrets.delay = turrets.delay - 1
+					-- if turrets.delay <= 0 and turrets.entities.base.valid then
 						-- Turrets_Action(turrets)
 					-- end
 				else
-					-- Turrets_Destroy(turrets)
+					Turrets_Destroy(turrets)
 					
 					table.remove(global.AT_Table, index)
 					if #global.AT_Table == 0 then
@@ -636,7 +636,7 @@ function On_Built(event)
 				local _inv = surface.create_entity({name = string.format("%s%s%d", string.sub(base.name, 1, 5), "_i", i), position = position, direction = direction, force = force})
 				_inv.set_request_slot({name = permission[number[2]].name[i], count = permission[number[2]].count_a[i]}, 1)
 				for j = 1, 3 do
-					_inv[permission[1][j]] = permission[number[2]].inv[i]
+					_inv[permission[1][j]] = permission[number[2]].inv[j]
 				end
 				table.insert(inv, _inv)
 			end
@@ -652,7 +652,7 @@ function On_Built(event)
 				end
 				local _spe = surface.create_entity({name = string.format("%s%s%d", string.sub(base.name, 1, 5), "_s", i), position = position, direction = direction, force = force})
 				for j = 1, 3 do
-					_spe[permission[1][j]] = permission[number[2]].spe[i]
+					_spe[permission[1][j]] = permission[number[2]].spe[j]
 				end
 				table.insert(spe, _spe)
 			end
@@ -686,273 +686,101 @@ end
 
 function Turrets_Health_Check(at_Turrets_Set)
 	
-	local entities = at_Turrets_Set.entities
-	local base = entities.base
+	local base = at_Turrets_Set.entities.base
+	local spe = at_Turrets_Set.entities.special
+	local name = string.sub(base.name, 1, 6)
+	local health_level = 0
 	local position = base.position
 	local force = base.force
-	local health_level = 0
 	
-	if base.name == "at_A1_b" then
-		-- 600/600/1200/1.3/1:2-4
-		if entities.turret.valid then
-			if entities.turret.name == "at_A1".."_t" then
-				health_level = health_level + entities.turret.health
-			end
-		else
-			
-			local A1T = base.surface.create_entity({name = "at_A1".."_c", position = position, force = force})
-			
-			A1T.health = 1
-			A1T.operable = false
-			A1T.destructible = false
-			A1T.minable = false
-			entities.turret = A1T
-		end
-		if entities.skill.valid then
-			if entities.skill.name == "at_A1".."_r" then
-				health_level = health_level + entities.skill.health
-			end
-		else
-			
-			local A1R = base.surface.create_entity({name = "at_A1".."_c", position = position, force = force})
-			
-			A1R.health = 1
-			A1R.operable = false
-			A1R.destructible = false
-			A1R.minable = false
-			entities.skill = A1R
-		end
-		
-		if entities.turret.name == "at_A1_c" and entities.turret.health >= 550*1.3 then
-			entities.turret.destroy()
-			
-			local CRT = base.surface.create_entity({name = "at_A1".."_t", position = position, force = force})
-			
-			CRT.health = 550
-			CRT.operable = false
-			CRT.destructible = true
-			CRT.minable = false
-			entities.turret = CRT
-		end
-		if entities.skill.name == "at_A1_c" and entities.skill.health >= 550*1.3 then
-			entities.skill.destroy()
-			
-			local CRT = base.surface.create_entity({name = "at_A1".."_r", position = position, force = force})
-			
-			CRT.health = 550
-			CRT.operable = false
-			CRT.destructible = true
-			CRT.minable = false
-			entities.skill = CRT
-		end
-		
-		if health_level <= 1 then
-			base.surface.create_entity({name = "cluster-grenade", position = position, force = force, target = position, speed = 1})
-			base.destroy()
-		else
-			base.health = health_level
-		end
-		
-	elseif base.name == "at_A2_b" then
-		-- 1500/1500/3000/1.3/1:2-4
-		if entities.turret.valid then
-			if entities.turret.name == "at_A2".."_t" then
-				health_level = health_level + entities.turret.health
-			end
-		else
-			
-			local A2T = base.surface.create_entity({name = "at_A2".."_c", position = position, force = force})
-			
-			A2T.health = 1
-			A2T.operable = false
-			A2T.destructible = false
-			A2T.minable = false
-			entities.turret = A2T
-		end
-		if entities.skill.valid then
-			if entities.skill.name == "at_A2".."_r" then
-				health_level = health_level + entities.skill.health
-			end
-		else
-			
-			local A2R = base.surface.create_entity({name = "at_A2".."_c", position = position, force = force})
-			
-			A2R.health = 1
-			A2R.operable = false
-			A2R.destructible = false
-			A2R.minable = false
-			entities.skill = A2R
-		end
-		
-		if entities.turret.name == "at_A2_c" and entities.turret.health >= 1400*1.3 then
-			entities.turret.destroy()
-			
-			local CRT = base.surface.create_entity({name = "at_A2".."_t", position = position, force = force})
-			
-			CRT.health = 1400
-			CRT.operable = false
-			CRT.destructible = true
-			CRT.minable = false
-			entities.turret = CRT
-		end
-		if entities.skill.name == "at_A2_c" and entities.skill.health >= 1400*1.3 then
-			entities.skill.destroy()
-			
-			local CRT = base.surface.create_entity({name = "at_A2".."_r", position = position, force = force})
-			
-			CRT.health = 1400
-			CRT.operable = false
-			CRT.destructible = true
-			CRT.minable = false
-			entities.skill = CRT
-		end
-		
-		if health_level <= 1 then
-			base.surface.create_entity({name = "cluster-grenade", position = position, force = force, target = position, speed = 1})
-			base.surface.create_entity({name = "cluster-grenade", position = position, force = force, target = position, speed = 1})
-			base.destroy()
-		else
-			base.health = health_level
-		end
-		
-	elseif base.name == "at_LC_b" then
-		-- 500/500/500/500/2000/1.3/1:4(4)
-		local x, y, LC_offset = 1, 1, 1.7
-		
-		for i = 1, #entities.skill do
-			if entities.skill[i].valid then
-				if entities.skill[i].name == "at_LC_l" then
-					health_level = health_level + entities.skill[i].health
-				end
-			else
-				for k = 1, i do
-					if k%2 == 1 then
-						x = x * -1
-					else
-						y = y * -1
+	if string.sub(base.name, 4, 5) == "A1" then
+		number = {1, 100}
+	elseif string.sub(base.name, 4, 5) == "A2" then
+		number = {2, 100}
+	elseif string.sub(base.name, 4, 5) == "LC" then
+		number = {3, 500}
+	elseif string.sub(base.name, 4, 5) == "CR" then
+		number = {4, 1000}
+	end
+	
+	if #spe > 1 then
+		for i = 1, #spe do
+			local entity = spe[i]
+			if entity.valid and string.sub(entity.name, 7, 7) == "s" then
+				health_level = health_level + entity.health
+			elseif not entity.valid then
+				local x, y, LC_offset = 1, 1, 1.7
+				position = base.position
+				if number[1] == 3 then
+					for k = 1, i do
+						if k%2 == 1 then
+							x = x * -1
+						else
+							y = y * -1
+						end
 					end
+					position = {position.x + LC_offset * x , position.y + LC_offset * y}
 				end
-				
-				local position_offset = {position.x + LC_offset * x , position.y + LC_offset * y }
-				local LCC = base.surface.create_entity({name = "at_LC".."_c", position = position_offset, force = force})
-				
-				LCC.health = 1
-				LCC.operable = false
-				LCC.destructible = false
-				LCC.minable = false
-				entities.skill[i] = LCC
+				local copse = base.surface.create_entity({name = name.."c"..i, position = position, force = force})
+				copse.health = 1
+				copse.operable = false
+				copse.destructible = false
+				copse.minable = false
+				spe[i] = copse
 			end
 			
-			if entities.skill[i].name == "at_LC_c" and entities.skill[i].health >= 450*1.3 then
-				entities.skill[i].destroy()
-				for k = 1, i do
-					if k%2 == 1 then
-						x = x * -1
-					else
-						y = y * -1
-					end
+			entity = spe[i]
+			if string.sub(entity.name, 7, 7) == "c" then
+				if entity.health >= (number[2] * 1.3 - 100) then
+					position = entity.position
+					local special = base.surface.create_entity({name = name.."s"..i, position = position, force = force})
+					entity.destroy()
+					
+					special.health = number[2] * 0.9
+					special.destructible = true
+					special.minable = false
+					special.operable = false
+					spe[i] = special
 				end
-				
-				local position_offset = {position.x + LC_offset * x , position.y + LC_offset * y }
-				local LCL = base.surface.create_entity({name = "at_LC".."_l", position = position_offset, force = force})
-				
-				LCL.health = 450
-				LCL.operable = false
-				LCL.destructible = true
-				LCL.minable = false
-				entities.skill[i] = LCL
 			end
 		end
-		
-		if health_level <= 1 then
-			base.surface.create_entity({name = "cluster-grenade", position = position, force = force, target = position, speed = 1})
-			base.destroy()
-		else
-			base.health = health_level
+	else
+		if spe[1].valid then
+			health_level = health_level + spe[1].health
 		end
-		
-	elseif base.name == "at_CR_b" then
-		-- 1000/1000/2000/1.3/1:2(2)
-		for i = 1, #entities.turret do
-			if entities.turret[i].valid then
-				if entities.turret[i].name == "at_CR_t"..i then
-					health_level = health_level + entities.turret[i].health
-				end
-			else
-				
-				local CRC = base.surface.create_entity({name = "at_CR".."_c", position = position, force = force})
-				
-				CRC.health = 1
-				CRC.operable = false
-				CRC.destructible = false
-				CRC.minable = false
-				entities.turret[i] = CRC
-			end
-			
-			if entities.turret[i].name == "at_CR_c" and entities.turret[i].health >= 950*1.3 then
-				entities.turret[i].destroy()
-				
-				local CRT = base.surface.create_entity({name = "at_CR".."_t"..i, position = position, force = force})
-				
-				CRT.health = 950
-				CRT.operable = false
-				CRT.destructible = true
-				CRT.minable = false
-				entities.turret[i] = CRT
-			end
-		end
-		
-		if health_level <= 1 then
-			base.surface.create_entity({name = "cluster-grenade", position = position, force = force, target = position, speed = 1})
-			base.destroy()
-		else
-			base.health = health_level
-		end
+	end
+	
+	if health_level > 0 then
+		base.health = health_level
+	else
+		position = base.position
+		base.surface.create_entity({name = "cluster-grenade", position = position, force = force, target = position, speed = 1})
+		base.destroy()
 	end
 end
 
 function Turrets_Destroy(at_Turrets_Set)
 	
-	local turrets = at_Turrets_Set.entities
+	local base = at_Turrets_Set.entities.base
+	local inv = at_Turrets_Set.entities.inventory
+	local spe = at_Turrets_Set.entities.special
 	
-	if turrets.base.valid then
-		turrets.base.destroy()
+	if base.valid then
+		base.destroy()
 	end
 	
-	if #turrets.turret > 0 then
-		for i = 1, #turrets.turret do
-			if turrets.turret[i].valid then
-				turrets.turret[i].destroy()
+	if #inv > 0 then
+		for i = 1, #inv do
+			if inv[i].valid then
+				inv[i].destroy()
 			end
-		end
-	else
-		if turrets.turret.valid then
-			turrets.turret.destroy()
-		end
-	end
-	
-	if #turrets.inventory > 0 then
-		for i = 1, #turrets.inventory do
-			if turrets.inventory[i].valid then
-				turrets.inventory[i].destroy()
-			end
-		end
-	else
-		if turrets.inventory.valid then
-			turrets.inventory.destroy()
 		end
 	end
 	
-	if turrets.skill then
-		if #turrets.skill > 0 then
-			for i = 1, #turrets.skill do
-				if turrets.skill[i].valid then
-					turrets.skill[i].destroy()
-				end
-			end
-		else
-			if turrets.skill.valid then
-				turrets.skill.destroy()
+	if #spe > 0 then
+		for i = 1, #spe do
+			if spe[i].valid then
+				spe[i].destroy()
 			end
 		end
 	end

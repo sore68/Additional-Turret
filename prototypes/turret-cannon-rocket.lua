@@ -89,7 +89,7 @@ return
 	order = "b[turret]-c[base]-e[mk3]",
 	max_health = 1000 * 1.3,
 	collision_box = {{-1.7, -1.7 }, {1.7, 1.7}},
-	selection_box = {{-2, -2 }, {2, 2}},
+	-- selection_box = {{-2, -2 }, {2, 2}},
 	fast_replaceable_group = "container",
 	inventory_size = 0,
 	picture = {
