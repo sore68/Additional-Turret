@@ -107,11 +107,9 @@ data:extend({
 	{
 		type = "projectile",
 		ammo_category = "dummy",
-		cooldown = 1500,
+		cooldown = 1200,
 		range = 300,
 		min_range = 100,
-		projectile_creation_distance = 1.8,
-		action ={},
 	},
 	call_for_help_radius = 40
 },
@@ -257,8 +255,9 @@ data:extend({
 	{
 		type = "projectile",
 		ammo_category = "dummy",
-		cooldown = 1500,
+		cooldown = 600,
 		range = 500,
+		min_range = 100,
 	},
 	
 	call_for_help_radius = 40

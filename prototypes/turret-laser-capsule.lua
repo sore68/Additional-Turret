@@ -404,12 +404,12 @@ data:extend({
 	-- }
 }
 })
-for i = 1, 4 do
+-- for i = 1, 4 do
 	data:extend({
-		laser_turret{name = "at_LC_s"..i},
-		laser_copse{name = "at_LC_c"..i}
+		laser_turret{name = "at_LC_s"},
+		laser_copse{name = "at_LC_c"}
 	})
-end
+-- end
 
 
 --item

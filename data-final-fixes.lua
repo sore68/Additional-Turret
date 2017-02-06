@@ -64,13 +64,6 @@ for _, tp in pairs(data.raw["unit-spawner"]) do
 		if damage_modif < mh then damage_modif = mh end
 	end
 end
-
--- local damage_modif = 0
--- if mod_detector[1] == 1 or mod_detector[2] == 1 then
-	-- damage_modif = 5
--- else
-	-- damage_modif = 1
--- end
 for v, x in pairs(data.raw.projectile) do
 	if x.name == "artillery-cluster" then
 		x.action[#x.action+1] = artillery_area_damage{perimeter = 5, amount = 100 * damage_modif}
@@ -82,6 +75,17 @@ for v, x in pairs(data.raw.projectile) do
 		x.action[#x.action+1] = artillery_area_damage{perimeter = 30, amount = 500 * damage_modif}
 	end
 end
+local fluid_container = {{"sulfuric-nitric-acid", 2}, {"nitric-acid", 1.5}, {"alien-acid", 3}, {"liquid-hydrochloric-acid", 1.5}, {"liquid-hydrofluoric-acid", 1.2}, {"liquid-perchloric-acid", 1.3}, {"liquid-nitric-acid", 1.5}, {"liquid-sulfuric-acid", 1.5}}
+for _, fluid in pairs(data.raw.fluid) do
+	for i = 1, #fluid_container do
+		if fluid.name == fluid_container[i][1] then
+			table.insert(data.raw["fluid-turret"]["at-acidthrower-turret"].attack_parameters.fluids, {type = fluid_container[i][1], damage_modifier = fluid_container[i][2]})
+			break
+		end
+	end
+	
+end
+
 
 ---------- Config strain
 if Config.enemy_corps_time then

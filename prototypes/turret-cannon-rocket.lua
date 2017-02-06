@@ -139,7 +139,7 @@ data:extend({
 	{
 		type = "projectile",
 		ammo_category = "dummy",
-		cooldown = 60,
+		cooldown = 120,
 		range = 40,
 		min_range = 15
 	},

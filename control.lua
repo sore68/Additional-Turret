@@ -14,19 +14,14 @@ local at_range = {}
 -- script.on_init(function() remote.call("Macromanaged_Turrets", "configure_logistic_turret", "my-cool-turret", "empty") end)                                 -- Does exactly the same thing as the previous example
 -- remote.call("Macromanaged_Turrets", "configure_logistic_turret", "my-cool-turret")                                                                         -- Removes the turrets' config entry, turning them back into normal turrets
 
--- at_A12	{entities = {base = entity, turret = New_TT, inventory = New_TI, skill = New_TR}, state = {delay = 3, inv_sync = 0}, etc = {{1, 0, 0}, 0}}
--- at_LC	{entities = {base = entity, turret = New_TT, inventory = New_TI, skill = New_TL}, state = {delay = 3, inv_sync = 0}, etc = nil}
--- at_CR	{entities = {base = entity, turret = New_T2, inventory = New_I2, skill = nil}, state = {delay = 3, inv_sync = {0, 0}}, etc = 0}
-
-
 -- {base / {inv} / {spe}} / {delay} / {etc}
 -- base = base
 -- inv = inv_1, inv_2 ...
 -- spe = spe_1, spe_2 ...
 
--- at = {entities = {base / {inv1} / {spe1}} / delay = delay / etc = {{area} / {detector}}}
+-- at = {entities = {base / {inv1} / {spe1}} / delay = delay / etc = {area = {area} / detector = detector}}
 -- lc = {entities = {base / {inv1} / {spe4}} / delay = delay / etc = {}}
--- cr = {entities = {base / {inv2} / {spe2}} / delay = delay / etc = {{sync} / {reload_state}}}
+-- cr = {entities = {base / {inv2} / {spe2}} / delay = delay / etc = {sync = {sync1 / sync2} / reload_state}}
 ------------------------------
 script.on_load(function()
 
@@ -55,13 +50,11 @@ script.on_event(defines.events.on_trigger_created_entity, function(event) AddMar
 script.on_event(defines.events.on_research_finished, function(event)
 	if string.sub(event.research.name, 1, 18) == "artillery-1-range-" then
 		at_range["at1"] = tonumber(string.sub(event.research.name, 19))
-		game.players[1].print({"artillery_max_range", {"entity-name.at_A1_b"}, 150+50*at_range["at1"]})
-		-- game.players[1].print("Heavy howitzer max range = " .. 150+50*at_range["at1"])
+		game.players[1].print({"message.artillery_max_range", {"entity-name.at_A1_b"}, 150+50*at_range["at1"]})
 	end
 	if string.sub(event.research.name, 1, 18) == "artillery-2-range-" then
 		at_range["at2"] = tonumber(string.sub(event.research.name, 19))
-		game.players[1].print({"artillery_max_range", {"entity-name.at_A2_b"}, 200+100*at_range["at2"]})
-		-- game.players[1].print("Experimental heavy howitzer max range = " .. 200+100*at_range["at2"])
+		game.players[1].print({"message.artillery_max_range", {"entity-name.at_A2_b"}, 200+100*at_range["at2"]})
 	end
 end)
 
@@ -167,10 +160,10 @@ script.on_event(defines.events.on_tick, function(event)
 			for index, turrets in pairs(global.AT_Table) do
 				if turrets.entities.base.valid then
 					Turrets_Health_Check(turrets)
-					-- turrets.delay = turrets.delay - 1
-					-- if turrets.delay <= 0 and turrets.entities.base.valid then
-						-- Turrets_Action(turrets)
-					-- end
+					turrets.delay = turrets.delay - 1
+					if turrets.delay <= 0 and turrets.entities.base.valid then
+						Turrets_Action(turrets)
+					end
 				else
 					Turrets_Destroy(turrets)
 					
@@ -263,18 +256,19 @@ function save_button(player)
 	
 	if button.at_radio_frame["at_radio_all"].state then
 		if global.AT_Table then
-			for _, turret in pairs(global.AT_Table) do
-				if turret[1].name == "at_LC_turret" and ammo_setting_table[3].LCT then
-					turret[2].clear_request_slot(1)
-					turret[2].set_request_slot({name = ammo_setting_table[1].LCT, count = ammo_setting_table[4].LCT}, 1)
-				elseif turret[1].name == "at_CR_turret" then
+			for _, turrets in pairs(global.AT_Table) do
+				local turret = turrets.entities
+				if turret.base.name == "at_LC_b" and ammo_setting_table[3].LCT then
+					turret.inventory[1].clear_request_slot(1)
+					turret.inventory[1].set_request_slot({name = ammo_setting_table[1].LCT, count = ammo_setting_table[4].LCT}, 1)
+				elseif turret.base.name == "at_CR_b" then
 					if ammo_setting_table[3].CRC then
-						turret[3][1][2].clear_request_slot(1)
-						turret[3][1][2].set_request_slot({name = ammo_setting_table[1].CRC, count = ammo_setting_table[4].CRC}, 1)
+						turret.inventory[1].clear_request_slot(1)
+						turret.inventory[1].set_request_slot({name = ammo_setting_table[1].CRC, count = ammo_setting_table[4].CRC}, 1)
 					end
 					if ammo_setting_table[3].CRR then
-						turret[3][2][2].clear_request_slot(1)
-						turret[3][2][2].set_request_slot({name = ammo_setting_table[1].CRR, count = ammo_setting_table[4].CRR}, 1)
+						turret.inventory[2].clear_request_slot(1)
+						turret.inventory[2].set_request_slot({name = ammo_setting_table[1].CRR, count = ammo_setting_table[4].CRR}, 1)
 					end
 				end
 			end
@@ -414,10 +408,10 @@ function config_area(player)
 	end
 	local frame = player.gui.left.add{type = "frame", name = "at_config_frame", direction = "vertical"}
 	frame.add{type = "label", name = "at_config_frame_label_1", caption = "Adjust the construction limits of the turret."}
-	local turret_tb = {"at_A1_turret", "at_A2_turret", "at_LC_turret", "at_CR_turret"}
+	local turret_tb = {"at_A1_b", "at_A2_b", "at_LC_b", "at_CR_b"}
 	for i = 1, 4 do
 		local config_table = frame.add{type = "table", name = "at_config_frame_table_"..i, colspan = 2}
-		config_table.add{type = "sprite", name = "at_config_frame_table1_sprite_"..i, sprite = "item/"..turret_tb[i].."_area", tooltip = game.item_prototypes[turret_tb[i].."_area"].localised_name}
+		config_table.add{type = "sprite", name = "at_config_frame_table1_sprite_"..i, sprite = "item/"..turret_tb[i], tooltip = game.item_prototypes[turret_tb[i]].localised_name}
 		config_table.add{type = "textfield", name = "at_config_frame_table1_textfield_"..i, text = global.limit_builder[i]}
 	end
 	frame.add{type = "button", name = "at_config_frame_button", caption = "Apply"}
@@ -429,21 +423,21 @@ function config_action(player)
 		global.limit_builder = {50, 10, 100, 100}
 	end
 	local frame = player.gui.left.at_config_frame
-	local turret_tb = {"at_A1_turret", "at_A2_turret", "at_LC_turret", "at_CR_turret"}
+	local turret_tb = {"at_A1_b", "at_A2_b", "at_LC_b", "at_CR_b"}
 	
 	if global.AT_Table then
 		for i = 1, 4 do
 			local check = 0
 			global.limit_builder[i] = tonumber(frame["at_config_frame_table_"..i]["at_config_frame_table1_textfield_"..i].text)
 			for index, turret_name in pairs (global.AT_Table) do
-				if turret_name[1].name == turret_tb[i] then
+				if turret_name.entities.base.name == turret_tb[i] then
 					check = check + 1
 				end
 			end
 			if check > global.limit_builder[i] then
 				check = check - global.limit_builder[i]
 				for j = #global.AT_Table, 0, -1 do
-					if global.AT_Table[j][1].name == turret_tb[i] then
+					if global.AT_Table[j].entities.base.name == turret_tb[i] then
 						Turrets_Destroy(global.AT_Table[j])
 						table.remove(global.AT_Table, j)
 						check = check - 1
@@ -453,6 +447,10 @@ function config_action(player)
 					end
 				end
 			end
+		end
+	else
+		for i = 1, 4 do
+			global.limit_builder[i] = tonumber(frame["at_config_frame_table_"..i]["at_config_frame_table1_textfield_"..i].text)
 		end
 	end
 	frame.destroy()
@@ -644,19 +642,23 @@ function On_Built(event)
 			_i, _j = 1, 1
 			for i = 1, permission[number[2]].count_t[2] do
 				position = base.position
+				local _spe
 				if number[1] == 3 then
 					if i%2 == 1 then _i = _i * -1
 					else _j = _j * -1 end
 					local LC_offset = 1.7
 					position = {position.x + LC_offset * _i , position.y + LC_offset * _j}
+					_spe = surface.create_entity({name = string.format("%s%s", string.sub(base.name, 1, 5), "_s"), position = position, direction = direction, force = force})
+				else
+					_spe = surface.create_entity({name = string.format("%s%s%d", string.sub(base.name, 1, 5), "_s", i), position = position, direction = direction, force = force})
 				end
-				local _spe = surface.create_entity({name = string.format("%s%s%d", string.sub(base.name, 1, 5), "_s", i), position = position, direction = direction, force = force})
+				
 				for j = 1, 3 do
 					_spe[permission[1][j]] = permission[number[2]].spe[j]
 				end
 				table.insert(spe, _spe)
 			end
-			table.insert(global.AT_Table, {entities = {base = base, inventory = inv, special = spe}, delay = 3, etc = {}})
+			table.insert(global.AT_Table, {entities = {base = base, inventory = inv, special = spe}, delay = 3, etc = nil})
 			--
 		end
 	end
@@ -666,7 +668,7 @@ end
 function overflow(event, number)
 	local entity = event.created_entity
 	if event.player_index then
-		game.players[event.player_index].print({"built_overflow", entity.localised_name, global.limit_builder[number]})
+		game.players[event.player_index].print({"message.built_overflow", entity.localised_name, global.limit_builder[number]})
 		game.players[event.player_index].insert({name = entity.name})
 	else
 		entity.surface.create_entity{name = "item-on-ground", position = entity.position, stack = {name = entity.name}}.order_deconstruction(entity.force)
@@ -684,10 +686,10 @@ function limit_counter(name)
 	return check
 end
 
-function Turrets_Health_Check(at_Turrets_Set)
+function Turrets_Health_Check(turrets)
 	
-	local base = at_Turrets_Set.entities.base
-	local spe = at_Turrets_Set.entities.special
+	local base = turrets.entities.base
+	local spe = turrets.entities.special
 	local name = string.sub(base.name, 1, 6)
 	local health_level = 0
 	local position = base.position
@@ -733,7 +735,13 @@ function Turrets_Health_Check(at_Turrets_Set)
 			if string.sub(entity.name, 7, 7) == "c" then
 				if entity.health >= (number[2] * 1.3 - 100) then
 					position = entity.position
-					local special = base.surface.create_entity({name = name.."s"..i, position = position, force = force})
+					local special
+					if number[1] == 3 then
+						special = base.surface.create_entity({name = name.."s", position = position, force = force})
+					else
+						special = base.surface.create_entity({name = name.."s"..i, position = position, force = force})
+					end
+					
 					entity.destroy()
 					
 					special.health = number[2] * 0.9
@@ -759,11 +767,11 @@ function Turrets_Health_Check(at_Turrets_Set)
 	end
 end
 
-function Turrets_Destroy(at_Turrets_Set)
+function Turrets_Destroy(turrets)
 	
-	local base = at_Turrets_Set.entities.base
-	local inv = at_Turrets_Set.entities.inventory
-	local spe = at_Turrets_Set.entities.special
+	local base = turrets.entities.base
+	local inv = turrets.entities.inventory
+	local spe = turrets.entities.special
 	
 	if base.valid then
 		base.destroy()
@@ -809,9 +817,9 @@ function Artillery_scanner(turrets)
 	end
 	
 	local grid
-	local scan_direction = turrets.etc[1][1]
-	local scan_level = turrets.etc[1][2]
-	local scan_interval = turrets.etc[1][3]
+	local scan_direction = turrets.etc.area[1]
+	local scan_level = turrets.etc.area[2]
+	local scan_interval = turrets.etc.area[3]
 	-- scan_direction = 1(right) 2(down) 3(left) 4(up) / scan_level = 0(check) 1 2 3 4 5 6 7... / scan_interval = [near|0 1 2 3 4 5 ...|far]
 	
 	if turrets.entities.base.name == "at_A1_b" then
@@ -828,7 +836,7 @@ function Artillery_scanner(turrets)
 		temp_scan_direction = scan_direction + 1
 	end
 	local temp_x, temp_y = scanner_calculator(grid, {temp_scan_direction, 0, scan_interval})
-	local x1, y1 = scanner_calculator(grid, turrets.etc[1])
+	local x1, y1 = scanner_calculator(grid, turrets.etc.area)
 	
 	scan_level = scan_level + 1
 	
@@ -840,15 +848,15 @@ function Artillery_scanner(turrets)
 			scan_level = 1
 			if scan_direction > 4 then
 				scan_direction = 1
-				if turrets.etc[2] == 0 then
+				if turrets.etc.detector == 0 then
 					scan_interval = scan_interval + 1
-					turrets.etc[2] = 0
+					turrets.etc.detector = 0
 					if grid[1] + grid[2] * scan_interval > grid[3] then
 						scan_interval = 0
 					end
 				else
 					scan_interval = 0
-					turrets.etc[2] = 0
+					turrets.etc.detector = 0
 				end
 			end
 		end
@@ -857,263 +865,9 @@ function Artillery_scanner(turrets)
 	local pos = turrets.entities.base.position
 	local area = {{pos.x + x1, pos.y + y1}, {pos.x + x1 + grid[2], pos.y + y1 + grid[2]}}
 	
-	turrets.etc[1] = {scan_direction, scan_level, scan_interval}
+	turrets.etc.area = {scan_direction, scan_level, scan_interval}
 	
 	return area
-end
-
-
-function Turrets_Action(at_Turrets_Set)
-	
-	local Entities = at_Turrets_Set.entities
-	local Base = Entities.base
-	local delay = 3
-	
-	if Base.name == "at_A1_b" or Base.name == "at_A2_b" then
-	
-		local Inventory = Entities.inventory
-		local Turret = Entities.turret
-		local Skill = Entities.skill
-		
-		local number
-		if tonumber(string.sub(Base.name, string.find(Base.name, "%d"))) then number = tonumber(string.sub(Base.name, string.find(Base.name, "%d"))) end
-		
-		local ammo_entity_name, ammo_count = inventory_sync(Inventory.get_inventory(1), Turret.get_inventory(1), ammo_list.artillery_shells, at_Turrets_Set.state.inv_sync)
-		at_Turrets_Set.state.inv_sync = ammo_count
-		Base.get_inventory(1).clear()
-		if ammo_count > 0 then Base.get_inventory(1).insert({name = "dummy", count = ammo_count}) end
-		
-		if ammo_count > 0 and Turret.name == "at_A"..number.."_t" and Skill.name == "at_A"..number.."_r" and Skill.energy > 0 then
-			local area = Artillery_scanner(at_Turrets_Set)
-			-- Find Target
-			local target
-			marks = {}
-			if number == 2 then
-				if global.at_Target ~= nil then
-					marks = global.at_Target
-				end
-				if #marks > 0 then
-					for k,mark in pairs(marks) do
-						if mark.valid == false then
-							table.remove(global.at_Target, k)
-							if #global.AT_Table == 0 then
-								global.at_Target = nil
-							end
-							break
-						end
-						-- target = {mark}
-					end
-					target = {marks[math.random(#marks)]}
-				end
-			end
-			
-			if target == nil then
-				spawner = Base.surface.find_entities_filtered({area = area, type = "unit-spawner"})
-				if #spawner > 0 then
-					target = {spawner[math.random(#spawner)]}
-				else
-					worm = Base.surface.find_entities_filtered({area = area, type = "turret"})
-					if #worm > 0 then
-						target = {worm[math.random(#worm)]}
-					end
-				end
-			end
-			
-			if target ~= nil then
-				-- Attack Target
-				local offsetR
-				local pos = Base.position
-				at_Turrets_Set.etc[2] = at_Turrets_Set.etc[2] + 1
-				if #marks > 0 then
-					offsetR = 10
-				else
-					offsetR = 5
-				end
-				local offsetX = target[1].position.x + math.random(0,offsetR) * math.sin(math.random()*(math.pi*2))
-				local offsetY = target[1].position.y + math.random(0,offsetR) * math.sin(math.random()*(math.pi*2))
-				
-				local newtarget = {offsetX, offsetY}
-				
-				local speed = (((pos.x - offsetX)^2 + (pos.y - offsetY)^2)^0.5) / 240
-				
-				
-				Base.surface.create_entity({name = "ammo-action", position = {x = pos.x, y = pos.y - 5.625}, force = Base.force, target = {x = pos.x, y = pos.y - 100}, speed = 2})
-				Base.surface.create_entity({name = "ammo-shadow", position = {x = pos.x, y = pos.y}, force = Base.force, target = newtarget, speed = speed})
-				Base.surface.create_entity({name = "muzzle-flash", position = {x = pos.x, y = pos.y - 5.625}, force = Base.force, target = {x = pos.x, y = pos.y - 5.25}, speed = 0.01})
-				Base.surface.create_entity({name = ammo_entity_name, position = {x = offsetX, y = offsetY - 240}, force = Base.force, target = newtarget, speed = 1})
-				Base.surface.create_entity({name = "at_Artillery_shoot_sound", position = pos})
-				
-				local units = Base.surface.find_enemy_units(newtarget, 10 * number)
-				if units and #units > 0 then
-					for _, unit in pairs(units) do
-						unit.set_command({type = defines.command.attack, target = Turret, distraction = defines.distraction.by_anything})
-					end
-				end
-				
-				-- Reduce Ammo
-				Base.remove_item({name = "dummy", count = 1})
-				Inventory.remove_item({name = ammo_entity_name, count = 1})
-				Turret.remove_item({name = ammo_entity_name, count = 1})
-				
-				
-				-- Delay between shots
-				if #marks > 0 then
-					delay = 3 * 5 * (3 - number)
-				else
-					delay = 3 * 10 * (3 - number) -- 20
-				end
-				
-			else
-				delay = 3 * 1
-			end
-		end
-		
-	elseif Base.name == "at_LC_b" then
-		local Inventory = Entities.inventory
-		local Turret = Entities.turret
-		
-		local ammo_entity_name ,ammo_count = inventory_sync(Inventory.get_inventory(1), Turret.get_inventory(1), ammo_list.capsules, at_Turrets_Set.state.inv_sync)
-		at_Turrets_Set.state.inv_sync = ammo_count
-		
-		Base.get_inventory(1).clear()
-		if ammo_count > 0 then Base.get_inventory(1).insert({name = "dummy", count = ammo_count}) end
-		
-		if ammo_count > 0 and Turret.name == "at_LC_t" then
-			
-			local range = 30
-			local pos = Base.position
-			
-			-- Find Target
-			local target = Base.surface.find_nearest_enemy{position = pos, max_distance = range}
-			
-			if target ~= nil then
-				-- Attack Target
-				Base.surface.create_entity({name = ammo_entity_name, position = pos, force = Base.force, target = target, speed = 0.75})
-				Base.surface.create_entity({name = "at_LC_turret_sound", position = pos})
-				
-				-- Reduce Ammo
-				Base.remove_item({name = "dummy", count = 1})
-				Inventory.remove_item({name = ammo_entity_name, count = 1})
-				Turret.remove_item({name = ammo_entity_name, count = 1})
-				
-				-- Delay between shots
-				delay = 3 * 2 -- 2
-			end
-		end
-		
-	elseif Base.name == "at_CR_turret" then
-		
-		local Inventory1 = Entities.inventory[1]
-		local Inventory2 = Entities.inventory[2]
-		local Turret1 = Entities.turret[1]
-		local Turret2 = Entities.turret[2]
-		
-		if not ammo_list.rockets then
-			input_ammo()
-		end
-		
-		local ammo_entity_name_s, ammo_count_s = inventory_sync(Inventory1.get_inventory(1), Turret1.get_inventory(1), ammo_list.shells, at_Turrets_Set.state.inv_sync[1])
-		local ammo_entity_name_r, ammo_count_r = inventory_sync(Inventory2.get_inventory(1), Turret2.get_inventory(1), ammo_list.rockets, at_Turrets_Set.state.inv_sync[2])
-		at_Turrets_Set.state.inv_sync[1] = ammo_count_s
-		at_Turrets_Set.state.inv_sync[2] = ammo_count_r
-		
-		Base.get_inventory(1).clear()
-		if ammo_count_r >= ammo_count_s then Base.get_inventory(1).insert({name = "dummy", count = ammo_count_r})
-		else Base.get_inventory(1).insert({name = "dummy", count = ammo_count_s}) end
-		
-		local maxrange = 50
-		delay = 1
-		
-		-- local body_direction = at_Turrets_Set[1].direction
-		-- direction = 0(north) ~ 7
-		
-		if (ammo_count_s + ammo_count_r) > 0 and Turret1.name == "at_CR_t1" then
-		
-			local pos = Base.position
-			local target = Base.surface.find_enemy_units(pos, maxrange)
-			
-			-- Fire at Enemy
-			if #target ~= 0 then
-				
-				if at_Turrets_Set.etc == 0 then
-					at_Turrets_Set.etc = 1
-					Turret1.active = false
-					Turret2.active = false
-					delay = 3 * 2
-					Base.surface.create_entity({name = "flying-text", position = pos, text = "Reload Ammo 2s", color = {r = 0.7, g = 0.7}})
-				else
-					at_Turrets_Set.etc = 0
-					Turret1.active = true
-					Turret2.active = true
-					delay = 3 * 5
-					Base.surface.create_entity({name = "flying-text", position = pos, text = "Fire!", color = {r = 1}})
-				end
-			end
-		end
-	end
-	
-	if delay == 0 then
-		delay = 3 * 10
-	end
-	at_Turrets_Set.state.delay = delay
-end
-
-
--- DeBug Messages 
-function writeDebug(message)
-	if game.players[1].name == "sore68" then
-		game.players[1].print(tostring(message))
-	end
-end
-
-function inventory_sync(inv_1, inv_2, ammo_table, check)
-
-	local stack, _c, _n = {}, {0, 0}
-	
-	if not inv_1.is_empty() then
-		for _, x in pairs(ammo_table) do
-			if inv_1[1].prototype.name == x[1] then
-				_n = x[2]
-				_c[1] = 1
-				break
-			end
-		end
-		table.insert(stack, {name = inv_1[1].prototype.name, count = inv_1[1].count})
-	end
-	if not inv_2.is_empty() then
-		table.insert(stack, {name = inv_2[1].prototype.name, count = inv_2[1].count})
-		_c[2] = 1
-	end
-	writeDebug("#stack = " .. #stack)
-	
-	for index, shell in pairs(stack) do
-		writeDebug(index .. ". name = " .. shell.name .. " count = " .. shell.count .. " : ".. _c[1] .. " / " .. _c[2])
-	end
-	
-	if _c[1] == 1 then
-		if _c[2] == 1 then
-			if stack[1].name == stack[2].name then
-				check = stack[1].count + stack[2].count - check
-			else
-				check = stack[1].count
-			end
-		else
-			check = stack[1].count
-		end
-	else
-		check = 0
-	end
-	-- writeDebug("check = " .. check)
-	inv_1.clear()
-	inv_2.clear()
-	if check > 0 then
-		inv_1.insert({name = stack[1].name, count = check})
-		inv_2.insert({name = stack[1].name, count = check})
-		if inv_1.valid and inv_2.valid then writeDebug("True") else writeDebug("False") end
-	end
-	
-	return _n, check
-
 end
 
 function AddMark(event)
@@ -1139,10 +893,6 @@ function Recall_Items(entity, player_index)
 	end
 end
 
-function On_Deconstruction(event)
-	
-end
-
 function On_Destruction(event)
 	
 	if string.sub(event.entity.name, 1, 3) == "at_" then
@@ -1163,5 +913,227 @@ function On_Destruction(event)
 				end
 			end
 		end
+	end
+end
+
+function Turrets_Action(turrets)
+	
+	local base = turrets.entities.base
+	local inv = turrets.entities.inventory
+	local spe = turrets.entities.special
+	local delay = 3
+	
+	if base.name == "at_A1_b" or base.name == "at_A2_b" then
+		if not turrets.etc then
+			turrets.etc = {area = {1, 0, 0}, detector = 0}
+		end
+		
+		local number
+		if tonumber(string.sub(base.name, string.find(base.name, "%d"))) then number = tonumber(string.sub(base.name, string.find(base.name, "%d"))) end
+		
+		local ammo_name, ammo_count = nil, 0
+		if not inv[1].get_inventory(1).is_empty() then
+			ammo_name = inv[1].get_inventory(1)[1].prototype.name
+			ammo_count = inv[1].get_inventory(1)[1].count
+			-- writeDebug("ammo name = " .. ammo_name .. " / count = " .. ammo_count)
+		end
+		
+		base.get_inventory(1).clear()
+		if ammo_count > 0 then base.get_inventory(1).insert({name = "dummy", count = ammo_count}) end
+		
+		if ammo_count > 0 and spe[1].energy > 0 then
+			local area = Artillery_scanner(turrets)
+			-- writeDebug("scanner = " .. turrets.etc.area[1] .. " / " .. turrets.etc.area[2] .. " / " .. turrets.etc.area[3])
+			
+			-- Find Target
+			local target
+			marks = {}
+			if number == 2 then
+				if global.at_Target ~= nil then
+					marks = global.at_Target
+				end
+				if #marks > 0 then
+					for k,mark in pairs(marks) do
+						if mark.valid == false then
+							table.remove(global.at_Target, k)
+							if #global.AT_Table == 0 then
+								global.at_Target = nil
+							end
+							break
+						end
+						-- target = {mark}
+					end
+					target = {marks[math.random(#marks)]}
+				end
+			end
+			
+			if target == nil then
+				local spawner = base.surface.find_entities_filtered({area = area, type = "unit-spawner"})
+				if #spawner > 0 then
+					target = {spawner[math.random(#spawner)]}
+				else
+					local worm = base.surface.find_entities_filtered({area = area, type = "turret"})
+					if #worm > 0 then
+						target = {worm[math.random(#worm)]}
+					end
+				end
+			end
+			
+			if target ~= nil then
+				-- Attack Target
+				local offsetR
+				local pos = base.position
+				turrets.etc.detector = turrets.etc.detector + 1
+				offsetR = 5
+				if #marks > 0 and number == 2 then
+					offsetR = 10
+				end
+				local offsetX = target[1].position.x + math.random(0,offsetR) * math.sin(math.random()*(math.pi*2))
+				local offsetY = target[1].position.y + math.random(0,offsetR) * math.sin(math.random()*(math.pi*2))
+				
+				local newtarget = {offsetX, offsetY}
+				
+				local speed = (((pos.x - offsetX)^2 + (pos.y - offsetY)^2)^0.5) / 240
+				
+				
+				base.surface.create_entity({name = "ammo-action", position = {x = pos.x, y = pos.y - 5.625}, force = base.force, target = {x = pos.x, y = pos.y - 100}, speed = 2})
+				base.surface.create_entity({name = "ammo-shadow", position = {x = pos.x, y = pos.y}, force = base.force, target = newtarget, speed = speed})
+				base.surface.create_entity({name = "muzzle-flash", position = {x = pos.x, y = pos.y - 5.625}, force = base.force, target = {x = pos.x, y = pos.y - 5.25}, speed = 0.01})
+				base.surface.create_entity({name = ammo_name, position = {x = offsetX, y = offsetY - 240}, force = base.force, target = newtarget, speed = 1})
+				base.surface.create_entity({name = "at_Artillery_shoot_sound", position = pos})
+				
+				local units = base.surface.find_enemy_units(newtarget, 10 * number)
+				if units and #units > 0 then
+					for _, unit in pairs(units) do
+						unit.set_command({type = defines.command.attack, target = spe[1], distraction = defines.distraction.by_anything})
+					end
+				end
+				
+				-- Reduce Ammo
+				base.remove_item({name = "dummy", count = 1})
+				inv[1].remove_item({name = ammo_name, count = 1})
+				
+				-- Delay between shots
+				delay = 3 * 10 * (3 - number) -- 20
+				if #marks > 0 and number == 2 then
+					delay = 3 * 5 * (3 - number)
+				end
+			else
+				delay = 3 * 1
+			end
+		end
+		
+	elseif base.name == "at_LC_b" then
+		local ammo_name, ammo_count = nil, 0
+		if not inv[1].get_inventory(1).is_empty() then
+			ammo_name = inv[1].get_inventory(1)[1].prototype.name
+			for _, x in pairs(ammo_list.capsules) do
+				if ammo_name == x[2] then
+					ammo_count = inv[1].get_inventory(1)[1].count
+					break
+				end
+			end
+			-- writeDebug("ammo name = " .. ammo_name .. " / count = " .. ammo_count)
+		end
+		
+		base.get_inventory(1).clear()
+		if ammo_count > 0 then base.get_inventory(1).insert({name = "dummy", count = ammo_count}) end
+		
+		if ammo_count > 0 then
+			
+			local range = 30
+			local pos = base.position
+			
+			-- Find Target
+			local target = base.surface.find_nearest_enemy{position = pos, max_distance = range}
+			
+			if target ~= nil then
+				-- Attack Target
+				base.surface.create_entity({name = ammo_name, position = pos, force = base.force, target = target, speed = 0.75})
+				base.surface.create_entity({name = "at_LC_turret_sound", position = pos})
+				
+				-- Reduce Ammo
+				base.remove_item({name = "dummy", count = 1})
+				inv[1].remove_item({name = ammo_name, count = 1})
+				
+				-- Delay between shots
+				delay = 3 * 2 -- 2
+			end
+		end
+		
+	elseif base.name == "at_CR_b" then
+		if not turrets.etc then
+			turrets.etc = {inv_sync = {0, 0}, state = 0}
+		end
+		if not ammo_list.rockets then -- if not (ammo_list.shells and ammo_list.rockets) then
+			input_ammo()
+		end
+		local ammo_name, ammo_count, ammo_type = {nil, nil}, {0, 0}, {"shells", "rockets"}
+		for i = 1, 2 do
+			spe[i].get_inventory(1).clear()
+			if not inv[i].get_inventory(1).is_empty() then
+				ammo_name[i] = inv[i].get_inventory(1)[1].prototype.name
+				for _, x in pairs(ammo_list[ammo_type[i]]) do
+					if ammo_name[i] == x[1] then
+						ammo_count[i] = inv[i].get_inventory(1)[1].count
+						break
+					end
+				end
+				-- writeDebug("ammo name = " .. ammo_name[i] .. " / count = " .. ammo_count[i])
+				if not spe[i].get_inventory(1).is_empty() then
+					if spe[i].get_inventory(1)[1].prototype.name == ammo_name[i] then
+						turrets.etc.inv_sync[i] = ammo_count[i] + spe[i].get_inventory(1)[1].count - turrets.etc.inv_sync[i]
+						ammo_count[i] = turrets.etc.inv_sync[i]
+					else
+						turrets.etc.inv_sync[i] = ammo_count[i]
+					end
+				end
+				spe[i].get_inventory(1).insert({name = ammo_name[i], count = ammo_count[i]})
+			end
+			base.get_inventory(1).clear()
+			if ammo_count[1] > 0 then base.get_inventory(1).insert({name = "dummy", count = 10}) end
+		end
+		
+		local maxrange = 50
+		delay = 3
+		
+		-- local body_direction = turrets[1].direction
+		-- direction = 0(north) ~ 7
+		
+		if (ammo_count[1] + ammo_count[2]) > 0 then
+		
+			local pos = base.position
+			local target = base.surface.find_enemy_units(pos, maxrange)
+			
+			-- Fire at Enemy
+			if #target ~= 0 then
+				if turrets.etc.state == 0 then
+					turrets.etc.state = 1
+					spe[1].active = false
+					spe[2].active = false
+					delay = 3 * 2
+					base.surface.create_entity({name = "flying-text", position = pos, text = "Reload Ammo 2s", color = {r = 0.7, g = 0.7}})
+				else
+					turrets.etc.state = 0
+					spe[1].active = true
+					spe[2].active = true
+					delay = 3 * 5
+					base.surface.create_entity({name = "flying-text", position = pos, text = "Fire!", color = {r = 1}})
+				end
+			end
+		end
+	end
+	
+	if delay == 0 then
+		delay = 3 * 10
+	end
+	turrets.delay = delay
+end
+
+
+-- DeBug Messages 
+function writeDebug(message)
+	if game.players[1].name == "sore68" then
+		game.players[1].print(tostring(message))
 	end
 end

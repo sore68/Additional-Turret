@@ -1374,8 +1374,8 @@ data:extend({
 		fire_penalty = 15,
 		
 		fluids = { 
-	{type = "sulfuric-acid", damage_modifier = 1.0},
-	{type = "piranha-solution", damage_modifier = 1.2},
+			{type = "sulfuric-acid", damage_modifier = 1.5},
+			{type = "piranha-solution", damage_modifier = 2},
 		},
 		fluid_consumption = 0.008,
 		
