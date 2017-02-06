@@ -36,6 +36,17 @@ end)
 script.on_configuration_changed(function()
 
 	recall_macromanaged_turrets()
+	global.Artillery_Table = nil
+	for _,surface in pairs(game.surfaces) do
+		local name = {"at_A1_b", "at_A2_b", "at_LC_b" ,"at_CR_b"}
+		for i = 1, 4 do
+			local bases = surface.find_entities_filtered{name = name[i]}
+			for _, base in pairs(bases) do
+				base.surface.create_entity{name = "item-on-ground", position = base.position, stack = {name = name[i], count = 1}}.order_deconstruction(base.force)
+				base.destroy()
+			end
+		end
+	end
 
 end)
 ------------------------------
