@@ -14,11 +14,6 @@ local at_range = {}
 -- script.on_init(function() remote.call("Macromanaged_Turrets", "configure_logistic_turret", "my-cool-turret", "empty") end)                                 -- Does exactly the same thing as the previous example
 -- remote.call("Macromanaged_Turrets", "configure_logistic_turret", "my-cool-turret")                                                                         -- Removes the turrets' config entry, turning them back into normal turrets
 
--- {base / {inv} / {spe}} / {delay} / {etc}
--- base = base
--- inv = inv_1, inv_2 ...
--- spe = spe_1, spe_2 ...
-
 -- at = {entities = {base / {inv1} / {spe1}} / delay = delay / etc = {area = {area} / detector = detector}}
 -- lc = {entities = {base / {inv1} / {spe4}} / delay = delay / etc = {}}
 -- cr = {entities = {base / {inv2} / {spe2}} / delay = delay / etc = {sync = {sync1 / sync2} / reload_state}}
@@ -42,8 +37,9 @@ script.on_configuration_changed(function()
 		for i = 1, 4 do
 			local bases = surface.find_entities_filtered{name = name[i]}
 			for _, base in pairs(bases) do
-				base.surface.create_entity{name = "item-on-ground", position = base.position, stack = {name = name[i], count = 1}}.order_deconstruction(base.force)
-				base.destroy()
+				On_Built{created_entity = base}
+				-- base.surface.create_entity{name = "item-on-ground", position = base.position, stack = {name = name[i], count = 1}}.order_deconstruction(base.force)
+				-- base.destroy()
 			end
 		end
 	end
@@ -167,6 +163,17 @@ script.on_event(defines.events.on_tick, function(event)
 	end
 	
 	if event.tick % 20 == 0 then
+		if global.at_Target then
+			for i = #global.at_Target, 1, -1 do
+				if global.at_Target[i].valid == false then
+					table.remove(global.at_Target, i)
+					if #global.at_Target == 0 then
+						global.at_Target = nil
+					end
+					break
+				end
+			end
+		end
 		if global.AT_Table ~= nil then
 			for index, turrets in pairs(global.AT_Table) do
 				if turrets.entities.base.valid then
@@ -447,8 +454,9 @@ function config_action(player)
 			end
 			if check > global.limit_builder[i] then
 				check = check - global.limit_builder[i]
-				for j = #global.AT_Table, 0, -1 do
+				for j = #global.AT_Table, 1, -1 do
 					if global.AT_Table[j].entities.base.name == turret_tb[i] then
+						global.AT_Table[j].entities.base.surface.create_entity{name = "item-on-ground", position = global.AT_Table[j].entities.base.position, stack = {name = turret_tb[i], count = 1}}.order_deconstruction(global.AT_Table[j].entities.base.force)
 						Turrets_Destroy(global.AT_Table[j])
 						table.remove(global.AT_Table, j)
 						check = check - 1
@@ -723,6 +731,7 @@ function Turrets_Health_Check(turrets)
 				health_level = health_level + entity.health
 			elseif not entity.valid then
 				local x, y, LC_offset = 1, 1, 1.7
+				local copse
 				position = base.position
 				if number[1] == 3 then
 					for k = 1, i do
@@ -733,8 +742,10 @@ function Turrets_Health_Check(turrets)
 						end
 					end
 					position = {position.x + LC_offset * x , position.y + LC_offset * y}
+					copse = base.surface.create_entity({name = name.."c", position = position, force = force})
+				else
+					copse = base.surface.create_entity({name = name.."c"..i, position = position, force = force})
 				end
-				local copse = base.surface.create_entity({name = name.."c"..i, position = position, force = force})
 				copse.health = 1
 				copse.operable = false
 				copse.destructible = false
@@ -889,7 +900,6 @@ function AddMark(event)
 		end
 		table.insert(global.at_Target, event.entity)
 		event.entity.surface.create_entity({name = "capsule_sound", position = event.entity.position})
-		
 	end
 end
 
@@ -958,24 +968,8 @@ function Turrets_Action(turrets)
 			
 			-- Find Target
 			local target
-			marks = {}
 			if number == 2 then
-				if global.at_Target ~= nil then
-					marks = global.at_Target
-				end
-				if #marks > 0 then
-					for k,mark in pairs(marks) do
-						if mark.valid == false then
-							table.remove(global.at_Target, k)
-							if #global.AT_Table == 0 then
-								global.at_Target = nil
-							end
-							break
-						end
-						-- target = {mark}
-					end
-					target = {marks[math.random(#marks)]}
-				end
+				if global.at_Target then target = {global.at_Target[math.random(#global.at_Target)]} end
 			end
 			
 			if target == nil then
@@ -996,7 +990,7 @@ function Turrets_Action(turrets)
 				local pos = base.position
 				turrets.etc.detector = turrets.etc.detector + 1
 				offsetR = 5
-				if #marks > 0 and number == 2 then
+				if global.at_Target and number == 2 then
 					offsetR = 10
 				end
 				local offsetX = target[1].position.x + math.random(0,offsetR) * math.sin(math.random()*(math.pi*2))
@@ -1026,7 +1020,7 @@ function Turrets_Action(turrets)
 				
 				-- Delay between shots
 				delay = 3 * 10 * (3 - number) -- 20
-				if #marks > 0 and number == 2 then
+				if global.at_Target and number == 2 then
 					delay = 3 * 5 * (3 - number)
 				end
 			else
