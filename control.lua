@@ -1,13 +1,15 @@
 -- require "config"
 require "libs/list_ammo"
 
-local ammo_setting_table = {{LCT = "distractor-capsule", CRC = "cluster-cannon-shell", CRR = "explosive-multiple-rocket"},
-							{LCT = nil, CRC = nil, CRR = nil},
-							{LCT = false, CRC = false, CRR = false},
-							{LCT = 5, CRC = 20, CRR = 20}}
-local at_range = {}
-	at_range.at1 = 0
-	at_range.at2 = 0
+-- local ammo_setting_table = {{LCT = "distractor-capsule", CRC = "cluster-cannon-shell", CRR = "explosive-multiple-rocket"},
+							-- {LCT = nil, CRC = nil, CRR = nil},
+							-- {LCT = false, CRC = false, CRR = false},
+							-- {LCT = 5, CRC = 20, CRR = 20},
+							-- at_range = {at1 = 0, at2 = 0}
+							-- }
+-- local at_range = {}
+	-- at_range.at1 = 0
+	-- at_range.at2 = 0
 
 -- script.on_init(function() remote.call("Macromanaged_Turrets", "configure_logistic_turret", "my-cool-turret", {ammo = "my-awesome-ammo", count = 10}) end)  -- Configures a turret prototype with a default request
 -- script.on_init(function() remote.call("Macromanaged_Turrets", "configure_logistic_turret", "my-cool-turret", true) end)                                    -- Configures a turret prototype without a default request
@@ -25,21 +27,50 @@ end)
 script.on_init(function()
 
 	recall_macromanaged_turrets()
-
+	
+	if not global.ammo_setting_table then
+		global.ammo_setting_table = {{LCT = "distractor-capsule", CRC = "cluster-cannon-shell", CRR = "explosive-multiple-rocket"}, {LCT = nil, CRC = nil, CRR = nil}, {LCT = false, CRC = false, CRR = false}, {LCT = 5, CRC = 20, CRR = 20}, at_range = {at1 = 0, at2 = 0}}
+	end
+	
 end)
 
 script.on_configuration_changed(function()
 
 	recall_macromanaged_turrets()
-	global.Artillery_Table = nil
-	for _,surface in pairs(game.surfaces) do
-		local name = {"at_A1_b", "at_A2_b", "at_LC_b" ,"at_CR_b"}
-		for i = 1, 4 do
-			local bases = surface.find_entities_filtered{name = name[i]}
-			for _, base in pairs(bases) do
-				On_Built{created_entity = base}
-				-- base.surface.create_entity{name = "item-on-ground", position = base.position, stack = {name = name[i], count = 1}}.order_deconstruction(base.force)
-				-- base.destroy()
+	
+	if not global.ammo_setting_table then
+		global.ammo_setting_table = {{LCT = "distractor-capsule", CRC = "cluster-cannon-shell", CRR = "explosive-multiple-rocket"}, {LCT = nil, CRC = nil, CRR = nil}, {LCT = false, CRC = false, CRR = false}, {LCT = 5, CRC = 20, CRR = 20}, at_range = {at1 = 0, at2 = 0}}
+	end
+	
+	for i = 1, 2 do
+		for j = 3, 1, -1 do
+			if game.players[1].force.technologies["artillery-"..i.."-range-"..j].researched then
+				if global.ammo_setting_table.at_range["at"..i] < tonumber(string.sub(game.players[1].force.technologies["artillery-"..i.."-range-"..j].name, 19)) then
+					global.ammo_setting_table.at_range["at"..i] = tonumber(string.sub(game.players[1].force.technologies["artillery-"..i.."-range-"..j].name, 19))
+					if i == 1 then
+						writeDebug("Heavy howitzer max range = " .. 150+50*global.ammo_setting_table.at_range["at"..i])
+					else
+						writeDebug("Experimental heavy howitzer max range = " .. 200+100*global.ammo_setting_table.at_range["at"..i])
+					end
+					break
+				end
+			end
+		end
+	end
+	
+	if global.Artillery_Table then
+		global.Artillery_Table = nil
+		if not global.AT_Table then
+			for _,surface in pairs(game.surfaces) do
+				local name = {"at_A1_b", "at_A2_b", "at_LC_b" ,"at_CR_b"}
+				for i = 1, 4 do
+					local bases = surface.find_entities_filtered{name = name[i]}
+					for _, base in pairs(bases) do
+						On_Built{created_entity = base}
+						-- base.surface.create_entity{name = "item-on-ground", position = base.position, stack = {name = name[i], count = 1}}.order_deconstruction(base.force)
+						-- base.destroy()
+					end
+				end
 			end
 		end
 	end
@@ -56,12 +87,12 @@ script.on_event(defines.events.on_trigger_created_entity, function(event) AddMar
 
 script.on_event(defines.events.on_research_finished, function(event)
 	if string.sub(event.research.name, 1, 18) == "artillery-1-range-" then
-		at_range["at1"] = tonumber(string.sub(event.research.name, 19))
-		game.players[1].print({"message.artillery_max_range", {"entity-name.at_A1_b"}, 150+50*at_range["at1"]})
+		global.ammo_setting_table.at_range["at1"] = tonumber(string.sub(event.research.name, 19))
+		-- game.players[1].print({"message.artillery_max_range", {"entity-name.at_A1_b"}, 150+50*at_range["at1"]})
 	end
 	if string.sub(event.research.name, 1, 18) == "artillery-2-range-" then
-		at_range["at2"] = tonumber(string.sub(event.research.name, 19))
-		game.players[1].print({"message.artillery_max_range", {"entity-name.at_A2_b"}, 200+100*at_range["at2"]})
+		global.ammo_setting_table.at_range["at2"] = tonumber(string.sub(event.research.name, 19))
+		-- game.players[1].print({"message.artillery_max_range", {"entity-name.at_A2_b"}, 200+100*at_range["at2"]})
 	end
 end)
 
@@ -69,12 +100,12 @@ script.on_event(defines.events.on_gui_click, function(event)
 	
 	if event.element.name == "at_setting" then
 		expand_button(game.players[event.player_index])
-		ammo_setting_table[2].LCT = nil
-		ammo_setting_table[2].CRC = nil
-		ammo_setting_table[2].CRR = nil
-		ammo_setting_table[3].LCT = false
-		ammo_setting_table[3].CRC = false
-		ammo_setting_table[3].CRR = false
+		global.ammo_setting_table[2].LCT = nil
+		global.ammo_setting_table[2].CRC = nil
+		global.ammo_setting_table[2].CRR = nil
+		global.ammo_setting_table[3].LCT = false
+		global.ammo_setting_table[3].CRC = false
+		global.ammo_setting_table[3].CRR = false
 		
 	elseif event.element.name == "at_save_button" then
 		save_button(game.players[event.player_index])
@@ -108,11 +139,11 @@ script.on_event(defines.events.on_gui_checked_state_changed, function(event)
 		game.players[event.player_index].gui.left.at_button.at_radio_frame.at_radio_all.state = false
 		
 	elseif event.element.name == "at_checkbox_LCT" then
-		ammo_setting_table[3].LCT = event.element.state
+		global.ammo_setting_table[3].LCT = event.element.state
 	elseif event.element.name == "at_checkbox_CRC" then
-		ammo_setting_table[3].CRC = event.element.state
+		global.ammo_setting_table[3].CRC = event.element.state
 	elseif event.element.name == "at_checkbox_CRR" then
-		ammo_setting_table[3].CRR = event.element.state
+		global.ammo_setting_table[3].CRR = event.element.state
 	elseif event.element.name == "at_config_box_1" then
 		local frame = game.players[event.player_index].gui.left.at_artillery_range_frame
 		if frame.at_config_box_2 then
@@ -216,12 +247,12 @@ function create_button(player)
 			config_frame.destroy()
 		end
 	elseif on_off_table then
-		ammo_setting_table[2].LCT = nil
-		ammo_setting_table[2].CRC = nil
-		ammo_setting_table[2].CRR = nil
-		ammo_setting_table[3].LCT = false
-		ammo_setting_table[3].CRC = false
-		ammo_setting_table[3].CRR = false
+		global.ammo_setting_table[2].LCT = nil
+		global.ammo_setting_table[2].CRC = nil
+		global.ammo_setting_table[2].CRR = nil
+		global.ammo_setting_table[3].LCT = false
+		global.ammo_setting_table[3].CRC = false
+		global.ammo_setting_table[3].CRR = false
 		
 		on_off_table.destroy()	
 	else
@@ -230,8 +261,8 @@ function create_button(player)
 		end
 		player.gui.left.add{type = "button", name = "at_setting", style = "at_setting_button_style"}
 		local range_frame = player.gui.left.add{type = "frame", name = "at_artillery_range_frame", direction = "vertical"}
-		range_frame.add{type = "label", name = "at_A1_turret_range", caption = "Heavy howitzer max range = " .. 150+50*at_range.at1}
-		range_frame.add{type = "label", name = "at_A2_turret_range", caption = "Experimental heavy howitzer max range = " .. 200+100*at_range.at2}
+		range_frame.add{type = "label", name = "at_A1_turret_range", caption = "Heavy howitzer max range = " .. 150+50*global.ammo_setting_table.at_range.at1}
+		range_frame.add{type = "label", name = "at_A2_turret_range", caption = "Experimental heavy howitzer max range = " .. 200+100*global.ammo_setting_table.at_range.at2}
 		range_frame.add{type = "checkbox", name = "at_config_box_1", state = false, caption = "Advanced Settings"}
 	end
 end
@@ -254,7 +285,7 @@ function ammo_selected_button(event, list)
 			game.players[event.player_index].gui.left.at_button.at_checkbox_frame[frame1][frame2][frame3][frame4].style = "at_select_style"
 		end
 		event.element.style = "at_selected_style"
-		ammo_setting_table[2][name] = string.sub(event.element.name, 8)
+		global.ammo_setting_table[2][name] = string.sub(event.element.name, 8)
 	end
 end
 
@@ -262,31 +293,31 @@ function save_button(player)
 	local setting = player.gui.left["at_setting"]
 	local button = player.gui.left["at_button"]
 	
-	if ammo_setting_table[3].LCT and ammo_setting_table[2].LCT then
-		ammo_setting_table[1].LCT = ammo_setting_table[2].LCT
+	if global.ammo_setting_table[3].LCT and global.ammo_setting_table[2].LCT then
+		global.ammo_setting_table[1].LCT = global.ammo_setting_table[2].LCT
 	end
-	if ammo_setting_table[3].CRC and ammo_setting_table[2].CRC then
-		ammo_setting_table[1].CRC = ammo_setting_table[2].CRC
+	if global.ammo_setting_table[3].CRC and global.ammo_setting_table[2].CRC then
+		global.ammo_setting_table[1].CRC = global.ammo_setting_table[2].CRC
 	end
-	if ammo_setting_table[3].CRR and ammo_setting_table[2].CRR then
-		ammo_setting_table[1].CRR = ammo_setting_table[2].CRR
+	if global.ammo_setting_table[3].CRR and global.ammo_setting_table[2].CRR then
+		global.ammo_setting_table[1].CRR = global.ammo_setting_table[2].CRR
 	end
 	
 	if button.at_radio_frame["at_radio_all"].state then
 		if global.AT_Table then
 			for _, turrets in pairs(global.AT_Table) do
 				local turret = turrets.entities
-				if turret.base.name == "at_LC_b" and ammo_setting_table[3].LCT then
+				if turret.base.name == "at_LC_b" and global.ammo_setting_table[3].LCT then
 					turret.inventory[1].clear_request_slot(1)
-					turret.inventory[1].set_request_slot({name = ammo_setting_table[1].LCT, count = ammo_setting_table[4].LCT}, 1)
+					turret.inventory[1].set_request_slot({name = global.ammo_setting_table[1].LCT, count = global.ammo_setting_table[4].LCT}, 1)
 				elseif turret.base.name == "at_CR_b" then
-					if ammo_setting_table[3].CRC then
+					if global.ammo_setting_table[3].CRC then
 						turret.inventory[1].clear_request_slot(1)
-						turret.inventory[1].set_request_slot({name = ammo_setting_table[1].CRC, count = ammo_setting_table[4].CRC}, 1)
+						turret.inventory[1].set_request_slot({name = global.ammo_setting_table[1].CRC, count = global.ammo_setting_table[4].CRC}, 1)
 					end
-					if ammo_setting_table[3].CRR then
+					if global.ammo_setting_table[3].CRR then
 						turret.inventory[2].clear_request_slot(1)
-						turret.inventory[2].set_request_slot({name = ammo_setting_table[1].CRR, count = ammo_setting_table[4].CRR}, 1)
+						turret.inventory[2].set_request_slot({name = global.ammo_setting_table[1].CRR, count = global.ammo_setting_table[4].CRR}, 1)
 					end
 				end
 			end
@@ -303,22 +334,22 @@ function save_button(player)
 			local icon_frames = frame_table.add{type = "frame", name = "at_on_off_icon", direction = "horizontal"}
 			local button_frame = frame_table.add{type = "frame", name = "at_on_off_button", direction = "horizontal"}
 			
-			if checker1.state and ammo_setting_table[3].LCT then
+			if checker1.state and global.ammo_setting_table[3].LCT then
 				local icon_frame = icon_frames.add{type = "frame", name = "at_on_off_LCT_frame", direction = "vertical"}
 				icon_frame.add{type = "sprite", name = "at_on_off_script_LCT", sprite = "item/at_LC_b", tooltip = {"entity-name.at_LC_b"}}
-				icon_frame.add{type = "sprite", name = "at_on_off_script_LCT"..ammo_setting_table[1].LCT, sprite = "item/"..ammo_setting_table[1].LCT, tooltip = game.item_prototypes[ammo_setting_table[1].LCT].localised_name}
+				icon_frame.add{type = "sprite", name = "at_on_off_script_LCT"..global.ammo_setting_table[1].LCT, sprite = "item/"..global.ammo_setting_table[1].LCT, tooltip = game.item_prototypes[global.ammo_setting_table[1].LCT].localised_name}
 				number_gen(icon_frame)
 			end
-			if checker2.state and ammo_setting_table[3].CRC then
+			if checker2.state and global.ammo_setting_table[3].CRC then
 				local icon_frame = icon_frames.add{type = "frame", name = "at_on_off_CRC_frame", direction = "vertical"}
 				icon_frame.add{type = "sprite", name = "at_on_off_script_CRC", sprite = "item/at_CR_b", tooltip = {"entity-name.at_CR_b"}}
-				icon_frame.add{type = "sprite", name = "at_on_off_script_CRC"..ammo_setting_table[1].CRC, sprite = "item/"..ammo_setting_table[1].CRC, tooltip = game.item_prototypes[ammo_setting_table[1].CRC].localised_name}
+				icon_frame.add{type = "sprite", name = "at_on_off_script_CRC"..global.ammo_setting_table[1].CRC, sprite = "item/"..global.ammo_setting_table[1].CRC, tooltip = game.item_prototypes[global.ammo_setting_table[1].CRC].localised_name}
 				number_gen(icon_frame)
 			end
-			if checker3.state and ammo_setting_table[3].CRR then
+			if checker3.state and global.ammo_setting_table[3].CRR then
 				local icon_frame = icon_frames.add{type = "frame", name = "at_on_off_CRR_frame", direction = "vertical"}
 				icon_frame.add{type = "sprite", name = "at_on_off_script_CRR", sprite = "item/at_CR_b", tooltip = {"entity-name.at_CR_b"}}
-				icon_frame.add{type = "sprite", name = "at_on_off_script_CRR"..ammo_setting_table[1].CRR, sprite = "item/"..ammo_setting_table[1].CRR, tooltip = game.item_prototypes[ammo_setting_table[1].CRR].localised_name}
+				icon_frame.add{type = "sprite", name = "at_on_off_script_CRR"..global.ammo_setting_table[1].CRR, sprite = "item/"..global.ammo_setting_table[1].CRR, tooltip = game.item_prototypes[global.ammo_setting_table[1].CRR].localised_name}
 				number_gen(icon_frame)
 			end
 			
@@ -360,7 +391,7 @@ function expand_button(player)
 					Add_list(checkbox_frame)
 					checkbox_frame.add{type = "table", name = "at_textfield_LCT_frame", colspan = 2}
 						checkbox_frame.at_textfield_LCT_frame.add{type = "label", name = "at_LCT_label_textfield", caption = "COUNT :"}
-						checkbox_frame.at_textfield_LCT_frame.add{type = "textfield", name = "at_LCT_input_textfield", text = ammo_setting_table[4].LCT}
+						checkbox_frame.at_textfield_LCT_frame.add{type = "textfield", name = "at_LCT_input_textfield", text = global.ammo_setting_table[4].LCT}
 				
 				
 				checkbox_frame = button.at_checkbox_frame.add{type = "frame", name = "at_CRC_checkbox_frame", direction = "vertical"}
@@ -370,7 +401,7 @@ function expand_button(player)
 					Add_list(checkbox_frame)
 					checkbox_frame.add{type = "table", name = "at_textfield_CRC_frame", colspan = 2}
 						checkbox_frame.at_textfield_CRC_frame.add{type = "label", name = "at_CRC_label_textfield", caption = "COUNT :"}
-						checkbox_frame.at_textfield_CRC_frame.add{type = "textfield", name = "at_CRC_input_textfield", text = ammo_setting_table[4].CRC}
+						checkbox_frame.at_textfield_CRC_frame.add{type = "textfield", name = "at_CRC_input_textfield", text = global.ammo_setting_table[4].CRC}
 				
 				
 				checkbox_frame = button.at_checkbox_frame.add{type = "frame", name = "at_CRR_checkbox_frame", direction = "vertical"}
@@ -380,7 +411,7 @@ function expand_button(player)
 					Add_list(checkbox_frame)
 					checkbox_frame.add{type = "table", name = "at_textfield_CRR_frame", colspan = 2}
 						checkbox_frame.at_textfield_CRR_frame.add{type = "label", name = "at_CRR_label_textfield", caption = "COUNT :"}
-						checkbox_frame.at_textfield_CRR_frame.add{type = "textfield", name = "at_CRR_input_textfield", text = ammo_setting_table[4].CRR}
+						checkbox_frame.at_textfield_CRR_frame.add{type = "textfield", name = "at_CRR_input_textfield", text = global.ammo_setting_table[4].CRR}
 			
 			button.add{type = "button", name = "at_save_button", caption = "Apply"}
 	end
@@ -407,12 +438,12 @@ end
 
 function finish_button(player)
 	
-	ammo_setting_table[2].LCT = nil
-	ammo_setting_table[2].CRC = nil
-	ammo_setting_table[2].CRR = nil
-	ammo_setting_table[3].LCT = false
-	ammo_setting_table[3].CRC = false
-	ammo_setting_table[3].CRR = false
+	global.ammo_setting_table[2].LCT = nil
+	global.ammo_setting_table[2].CRC = nil
+	global.ammo_setting_table[2].CRR = nil
+	global.ammo_setting_table[3].LCT = false
+	global.ammo_setting_table[3].CRC = false
+	global.ammo_setting_table[3].CRR = false
 	
 	player.gui.left.at_on_off_table.destroy()
 end
@@ -519,15 +550,15 @@ function change_request_chest(player)
 	local unit = player.surface.find_entities_filtered({area = {{x = pos.x - range, y = pos.y - range}, {x = pos.x + range, y = pos.y + range}}, type = "logistic-container"})
 	if #unit > 0 then
 		for _, logistic_container in pairs(unit) do
-			if logistic_container.name == "at_LC_i" and ammo_setting_table[3].LCT then
+			if logistic_container.name == "at_LC_i" and global.ammo_setting_table[3].LCT then
 				logistic_container.clear_request_slot(1)
-				logistic_container.set_request_slot({name = ammo_setting_table[1].LCT, count = ammo_setting_table[4].LCT}, 1)
-			elseif logistic_container.name == "at_CR_i1" and ammo_setting_table[3].CRC then
+				logistic_container.set_request_slot({name = global.ammo_setting_table[1].LCT, count = global.ammo_setting_table[4].LCT}, 1)
+			elseif logistic_container.name == "at_CR_i1" and global.ammo_setting_table[3].CRC then
 				logistic_container.clear_request_slot(1)
-				logistic_container.set_request_slot({name = ammo_setting_table[1].CRC, count = ammo_setting_table[4].CRC}, 1)
-			elseif logistic_container.name == "at_CR_i2" and ammo_setting_table[3].CRR then
+				logistic_container.set_request_slot({name = global.ammo_setting_table[1].CRC, count = global.ammo_setting_table[4].CRC}, 1)
+			elseif logistic_container.name == "at_CR_i2" and global.ammo_setting_table[3].CRR then
 				logistic_container.clear_request_slot(1)
-				logistic_container.set_request_slot({name = ammo_setting_table[1].CRR, count = ammo_setting_table[4].CRR}, 1)
+				logistic_container.set_request_slot({name = global.ammo_setting_table[1].CRR, count = global.ammo_setting_table[4].CRR}, 1)
 			end
 		end
 	end
@@ -537,12 +568,12 @@ function number_holic(event)
 	local text = tonumber(event.element.text)
 	if type(text) == "number" then
 		if text > 0 and text <= 75 then
-			ammo_setting_table[4][string.sub(event.element.name, 4, 6)] = text
+			global.ammo_setting_table[4][string.sub(event.element.name, 4, 6)] = text
 		elseif text > 75 then
-			ammo_setting_table[4][string.sub(event.element.name, 4, 6)] = 75
+			global.ammo_setting_table[4][string.sub(event.element.name, 4, 6)] = 75
 		end
 	else
-		ammo_setting_table[4][string.sub(event.element.name, 4, 6)] = 20
+		global.ammo_setting_table[4][string.sub(event.element.name, 4, 6)] = 20
 	end
 end
 
@@ -563,13 +594,13 @@ function number_gen(frame)
 	local number
 	local name
 	if string.find(frame.name, "LCT") then
-		number = ammo_setting_table[4].LCT
+		number = global.ammo_setting_table[4].LCT
 		name = "LCT"
 	elseif string.find(frame.name, "CRC") then
-		number = ammo_setting_table[4].CRC
+		number = global.ammo_setting_table[4].CRC
 		name = "CRC"
 	elseif string.find(frame.name, "CRR") then
-		number = ammo_setting_table[4].CRR
+		number = global.ammo_setting_table[4].CRR
 		name = "CRR"
 	end
 	
@@ -626,8 +657,8 @@ function On_Built(event)
 		end
 		local permission = {{"destructible", "minable", "operable"},
 						at = {base = {false, true, false}, inv = {false, false, false}, spe = {true, false, false}, count_t = {1, 1}, name = {number[3] or nil}, count_a = {5}},
-						lc = {base = {false, true, false}, inv = {false, false, true}, spe = {true, false, false}, count_t = {1, 4}, name = {ammo_setting_table[1].LCT}, count_a = {ammo_setting_table[4].LCT}},
-						cr = {base = {false, true, false}, inv = {false, false, true}, spe = {true, false, false}, count_t = {2, 2}, name = {ammo_setting_table[1].CRC, ammo_setting_table[1].CRR}, count_a = {ammo_setting_table[4].CRC, ammo_setting_table[4].CRR}}
+						lc = {base = {false, true, false}, inv = {false, false, true}, spe = {true, false, false}, count_t = {1, 4}, name = {global.ammo_setting_table[1].LCT}, count_a = {global.ammo_setting_table[4].LCT}},
+						cr = {base = {false, true, false}, inv = {false, false, true}, spe = {true, false, false}, count_t = {2, 2}, name = {global.ammo_setting_table[1].CRC, global.ammo_setting_table[1].CRR}, count_a = {global.ammo_setting_table[4].CRC, global.ammo_setting_table[4].CRR}}
 					}
 		
 		check = limit_counter(base.name)
@@ -845,10 +876,10 @@ function Artillery_scanner(turrets)
 	-- scan_direction = 1(right) 2(down) 3(left) 4(up) / scan_level = 0(check) 1 2 3 4 5 6 7... / scan_interval = [near|0 1 2 3 4 5 ...|far]
 	
 	if turrets.entities.base.name == "at_A1_b" then
-		grid = {150, 50, 150 + 50 * at_range.at1}
+		grid = {150, 50, 150 + 50 * global.ammo_setting_table.at_range.at1}
 		--{grid, gap, max_range}
 	elseif turrets.entities.base.name == "at_A2_b" then
-		grid = {200, 100, 200 + 100 * at_range.at2}
+		grid = {200, 100, 200 + 100 * global.ammo_setting_table.at_range.at2}
 	end
 	
 	local temp_scan_direction
