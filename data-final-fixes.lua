@@ -90,7 +90,8 @@ end
 ---------- Config strain
 if Config.enemy_corps_time then
 	for v, x in pairs(data.raw.corpse) do
-		if string.find(x.name, "corpse") or string.find(x.name, "scorchmark") then
+		if not string.find(x.name, "remnants") then
+		-- if string.find(x.name, "corpse") or string.find(x.name, "scorchmark") then
 			x.time_before_removed = Config.enemy_corps_time
 		end
 	end
