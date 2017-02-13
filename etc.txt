@@ -1,0 +1,33 @@
+Factorio API
+  http://lua-api.factorio.com/latest/
+
+Factorio FORUMS
+  https://forums.factorio.com/index.php
+
+Factorio FORUMS - additional turret
+  https://forums.factorio.com/viewtopic.php?f=93&t=30865
+
+Factorio MDOS
+  https://mods.factorio.com/
+
+Factorio MDOS - additional turret
+  https://mods.factorio.com/mods/sore68/Additional-Turret
+
+
+
+
+function - (fire / acid / virus / bomb)
+
+
+smart bullet & shotgun shell (function)
+new artillery shells (small / large // function)
+
+
+add artillery in gui
+
+
+type -> damage / effect
+fire -> explosion + fire / sticker + fire
+acid -> explosion + acid / sticker + fire
+virus -> poison cloud / sticker + fire
+bomb -> explosion + impact / large crater
