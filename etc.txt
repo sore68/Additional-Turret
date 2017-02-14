@@ -29,5 +29,5 @@ add artillery in gui
 type -> damage / effect
 fire -> explosion + fire / sticker + fire
 acid -> explosion + acid / sticker + fire
-virus -> poison cloud / sticker + fire
+virus -> poison cloud / sticker + cloud
 bomb -> explosion + impact / large crater
