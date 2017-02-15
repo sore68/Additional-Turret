@@ -1008,17 +1008,17 @@ function Turrets_Action(turrets)
 		inv1.clear()
 		inv2.clear()
 		if sync > 0 then
-			writeDebug("name / count = " .. ammo_name .. " " .. sync .. "." .. ammo_count[2])
+			-- writeDebug("name / count = " .. ammo_name .. " " .. sync .. "." .. ammo_count[2])
 			if game.item_prototypes["at_" .. ammo_name] then
 				if game.item_prototypes["at_" .. ammo_name].magazine_size == ammo_count[2] or ammo_count[2] == 0 then
 					inv1.insert({name = ammo_name, count = sync})
 					inv2.insert({name = "at_" .. ammo_name, count = sync})
-					writeDebug("n1")
+					-- writeDebug("n1")
 				else
 					inv1.insert({name = ammo_name, count = sync})
 					inv2.insert({name = "at_" .. ammo_name, count = sync})
 					inv2[1].drain_ammo(game.item_prototypes["at_" .. ammo_name].magazine_size - ammo_count[2])
-					writeDebug("n2")
+					-- writeDebug("n2")
 				end
 			else
 				if game.item_prototypes[ammo_name].magazine_size == ammo_count[2] or ammo_count[2] == 0 then
@@ -1167,6 +1167,8 @@ function Turrets_Action(turrets)
 		delay = 3
 		
 		if (turrets.etc.inv_sync[1] + turrets.etc.inv_sync[2]) > 0 then
+			base.get_inventory(1).clear()
+			base.get_inventory(1).insert({name = "dummy", count = (turrets.etc.inv_sync[1] + turrets.etc.inv_sync[2])})
 		
 			local pos = base.position
 			local target = base.surface.find_enemy_units(pos, maxrange)
