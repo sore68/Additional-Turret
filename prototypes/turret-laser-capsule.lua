@@ -275,7 +275,7 @@ return
 		cooldown = 10,
 		projectile_center = {0, 0.2}, --{0, -0.2}
 		projectile_creation_distance = 1.4,
-		range = 15,
+		range = 17,
 		damage_modifier = 3,
 		ammo_type =
 		{
@@ -333,52 +333,19 @@ data:extend({
 	attack_parameters =
 	{
 		type = "projectile",
-		ammo_category = "dummy",
-		cooldown = 120,
-		range = 25,
+		ammo_category = "capsule",
+		cooldown = 60 * 2,
+		range = 30,
+		sound =
+		{
+			{
+				filename = "__Additional-Turret__/sound/LC_turret_sound.ogg",
+				volume = 1
+			}
+		},
 	},
 
 	call_for_help_radius = 50
-},
-{
-	type = "ammo-turret",
-	name = "at_LC_t",
-	icon = "__Additional-Turret__/graphics/icon/turret-lc-icon.png",
-	flags = {"placeable-neutral", "player-creation"},
-	selectable_in_game = false,
-	order = "b[turret]-b[laser-turret]-d[at_LC_base]",
-	max_health = 700,
-	corpse = "big-remnants",
-	dying_explosion = "massive-explosion",
-	
-	collision_box = {{ -0.5, -0.5}, {0.5, 0.5}},
-	-- selection_box = {{-3.5, -3.5 }, {3.5, 3.5}},
-	
-	rotation_speed = 0.008,
-	preparing_speed = 0.04,
-	folding_speed = 0.04,
-	inventory_size = 1,
-	automated_ammo_count = 10,
-	attacking_speed = 0.1,
-	
-	folded_animation = at_LC_turret_door_opening{},
-	preparing_animation = at_LC_turret_door_opening{},
-	prepared_animation = at_LC_turret_door_open{},
-	attacking_animation = at_LC_turret_door_open{},
-	folding_animation = at_LC_turret_door_opening{ run_mode = "backward"},
-	-- base_picture = at_LC_base{},
-	
-	vehicle_impact_sound =	{ filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
-	
-	attack_parameters =
-	{
-		type = "projectile",
-		ammo_category = "dummy",
-		cooldown = 2*60,
-		range = 25,
-	},
-
-	call_for_help_radius = 75
 },
 {
 	type = "logistic-container",

@@ -64,7 +64,7 @@ for _, tp in pairs(data.raw["unit-spawner"]) do
 		if damage_modif < mh then damage_modif = mh end
 	end
 end
-for v, x in pairs(data.raw.projectile) do
+for _, x in pairs(data.raw.projectile) do
 	if x.name == "artillery-cluster" then
 		x.action[#x.action+1] = artillery_area_damage{perimeter = 5, amount = 100 * damage_modif}
 	end
@@ -75,6 +75,11 @@ for v, x in pairs(data.raw.projectile) do
 		x.action[#x.action+1] = artillery_area_damage{perimeter = 30, amount = 500 * damage_modif}
 	end
 end
+for _, x in pairs(data.raw["electric-turret"]) do
+	if x.name == "at_LC_s" then
+		x.attack_parameters.damage_modifier = 2 * damage_modif -- 3
+	end
+end
 local fluid_container = {{"sulfuric-nitric-acid", 2}, {"nitric-acid", 1.5}, {"alien-acid", 3}, {"liquid-hydrochloric-acid", 1.5}, {"liquid-hydrofluoric-acid", 1.2}, {"liquid-perchloric-acid", 1.3}, {"liquid-nitric-acid", 1.5}, {"liquid-sulfuric-acid", 1.5}}
 for _, fluid in pairs(data.raw.fluid) do
 	for i = 1, #fluid_container do
@@ -83,15 +88,14 @@ for _, fluid in pairs(data.raw.fluid) do
 			break
 		end
 	end
-	
 end
 
 
 ---------- Config strain
 if Config.enemy_corps_time then
 	for v, x in pairs(data.raw.corpse) do
-		if not string.find(x.name, "remnants") then
-		-- if string.find(x.name, "corpse") or string.find(x.name, "scorchmark") then
+		-- if not string.find(x.name, "remnants") then
+		if string.find(x.name, "corpse") or string.find(x.name, "scorchmark") then
 			x.time_before_removed = Config.enemy_corps_time
 		end
 	end

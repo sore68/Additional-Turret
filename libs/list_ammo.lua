@@ -1,17 +1,17 @@
 require "config"
 
 ammo_list = {
-	capsules = {
+	-- capsules = {
 		--vanilla
 		--{item name, projectile name}
-		{"grenade", "grenade"},
-		{"cluster-grenade", "cluster-grenade"},
-		{"poison-capsule", "poison-capsule"},
-		{"slowdown-capsule", "slowdown-capsule"},
-		{"defender-capsule", "defender-capsule"},
-		{"distractor-capsule", "distractor-capsule"},
-		{"destroyer-capsule", "destroyer-capsule"},
-	},
+		-- {"grenade", "grenade"},
+		-- {"cluster-grenade", "cluster-grenade"},
+		-- {"poison-capsule", "poison-capsule"},
+		-- {"slowdown-capsule", "slowdown-capsule"},
+		-- {"defender-capsule", "defender-capsule"},
+		-- {"distractor-capsule", "distractor-capsule"},
+		-- {"destroyer-capsule", "destroyer-capsule"},
+	-- },
 	
 	shells = {
 		--vanilla

@@ -137,7 +137,7 @@ data:extend({
     },
 	{
       type = "unlock-recipe",
-      recipe = "target-capsule"
+      recipe = "target-marker"
     }
   },
   prerequisites = {"upgrade-shells-3"},

@@ -1,15 +1,4 @@
--- require "config"
 require "libs/list_ammo"
-
--- local ammo_setting_table = {{LCT = "distractor-capsule", CRC = "cluster-cannon-shell", CRR = "explosive-multiple-rocket"},
-							-- {LCT = nil, CRC = nil, CRR = nil},
-							-- {LCT = false, CRC = false, CRR = false},
-							-- {LCT = 5, CRC = 20, CRR = 20},
-							-- at_range = {at1 = 0, at2 = 0}
-							-- }
--- local at_range = {}
-	-- at_range.at1 = 0
-	-- at_range.at2 = 0
 
 -- script.on_init(function() remote.call("Macromanaged_Turrets", "configure_logistic_turret", "my-cool-turret", {ammo = "my-awesome-ammo", count = 10}) end)  -- Configures a turret prototype with a default request
 -- script.on_init(function() remote.call("Macromanaged_Turrets", "configure_logistic_turret", "my-cool-turret", true) end)                                    -- Configures a turret prototype without a default request
@@ -17,7 +6,7 @@ require "libs/list_ammo"
 -- remote.call("Macromanaged_Turrets", "configure_logistic_turret", "my-cool-turret")                                                                         -- Removes the turrets' config entry, turning them back into normal turrets
 
 -- at = {entities = {base / {inv1} / {spe1}} / delay = delay / etc = {area = {area} / detector = detector}}
--- lc = {entities = {base / {inv1} / {spe4}} / delay = delay / etc = {}}
+-- lc = {entities = {base / {inv1} / {spe4}} / delay = delay / etc = {sync = {1}}}
 -- cr = {entities = {base / {inv2} / {spe2}} / delay = delay / etc = {sync = {sync1 / sync2} / reload_state}}
 ------------------------------
 script.on_load(function()
@@ -47,11 +36,11 @@ script.on_configuration_changed(function()
 			if game.players[1].force.technologies["artillery-"..i.."-range-"..j].researched then
 				if global.ammo_setting_table.at_range["at"..i] < tonumber(string.sub(game.players[1].force.technologies["artillery-"..i.."-range-"..j].name, 19)) then
 					global.ammo_setting_table.at_range["at"..i] = tonumber(string.sub(game.players[1].force.technologies["artillery-"..i.."-range-"..j].name, 19))
-					if i == 1 then
-						writeDebug("Heavy howitzer max range = " .. 150+50*global.ammo_setting_table.at_range["at"..i])
-					else
-						writeDebug("Experimental heavy howitzer max range = " .. 200+100*global.ammo_setting_table.at_range["at"..i])
-					end
+					-- if i == 1 then
+						-- writeDebug("Heavy howitzer max range = " .. 150+50*global.ammo_setting_table.at_range["at"..i])
+					-- else
+						-- writeDebug("Experimental heavy howitzer max range = " .. 200+100*global.ammo_setting_table.at_range["at"..i])
+					-- end
 					break
 				end
 			end
@@ -517,6 +506,17 @@ function input_ammo()
 			end
 		end
 	end
+	
+	ammo_list.capsules = {}
+	for v, x in pairs(game.item_prototypes) do
+		if x.type == "ammo" then
+			if x.ammo_type.category == "grenade" or x.ammo_type.category == "capsule" then
+				if string.sub(x.name, 1, 3) == "at_" then
+					ammo_list.capsules[#ammo_list.capsules+1] = {string.sub(x.name, 4), x.name}
+				end
+			end
+		end
+	end
 end
 
 function view_area(player)
@@ -925,7 +925,7 @@ end
 
 function AddMark(event)
 
-	if event.entity.name == 'target-cloud' then
+	if event.entity.name == "target-cloud" then
 		if global.at_Target == nil then
 			global.at_Target = {}
 		end
@@ -969,6 +969,71 @@ function On_Destruction(event)
 end
 
 function Turrets_Action(turrets)
+	
+	function ammo_manager(inv1, inv2, sync, ammo_table)
+		local ammo_name, ammo_count = nil, {0,0}
+		
+		if inv1.is_empty() then
+			sync = 0
+		else
+			ammo_name = inv1[1].prototype.name
+			for _, x in pairs(ammo_table) do
+				if ammo_name == x[1] then
+					ammo_count[1] = inv1[1].count
+					break
+				end
+			end
+			
+			if ammo_count[1] == 0 then
+				sync = 0
+			else
+				if inv2.is_empty() then
+					sync = ammo_count[1] - sync
+				else
+					if inv2[1].prototype.name == ammo_name or inv2[1].prototype.name == "at_" .. ammo_name then
+						ammo_count[2] = inv2[1].ammo
+						sync = ammo_count[1] + inv2[1].count - sync
+					else
+						sync = ammo_count[1]
+					end
+					-- writeDebug("base count / mg size = " .. ammo_count[1] .. " / " .. ammo_count[2])
+				end
+			end
+		end
+		
+		-- if sync == 1 and ammo_count[2] == 0 then
+			-- sync = 0
+		-- end
+		
+		inv1.clear()
+		inv2.clear()
+		if sync > 0 then
+			writeDebug("name / count = " .. ammo_name .. " " .. sync .. "." .. ammo_count[2])
+			if game.item_prototypes["at_" .. ammo_name] then
+				if game.item_prototypes["at_" .. ammo_name].magazine_size == ammo_count[2] or ammo_count[2] == 0 then
+					inv1.insert({name = ammo_name, count = sync})
+					inv2.insert({name = "at_" .. ammo_name, count = sync})
+					writeDebug("n1")
+				else
+					inv1.insert({name = ammo_name, count = sync})
+					inv2.insert({name = "at_" .. ammo_name, count = sync})
+					inv2[1].drain_ammo(game.item_prototypes["at_" .. ammo_name].magazine_size - ammo_count[2])
+					writeDebug("n2")
+				end
+			else
+				if game.item_prototypes[ammo_name].magazine_size == ammo_count[2] or ammo_count[2] == 0 then
+					inv1.insert({name = ammo_name, count = sync})
+					inv2.insert({name = ammo_name, count = sync})
+				else
+					inv1.insert({name = ammo_name, count = sync})
+					inv1[1].drain_ammo(game.item_prototypes[ammo_name].magazine_size - ammo_count[2])
+					inv2.insert({name = ammo_name, count = sync})
+					inv2[1].drain_ammo(game.item_prototypes[ammo_name].magazine_size - ammo_count[2])
+				end
+			end
+		end
+		return sync
+	end
 	
 	local base = turrets.entities.base
 	local inv = turrets.entities.inventory
@@ -1060,40 +1125,29 @@ function Turrets_Action(turrets)
 		end
 		
 	elseif base.name == "at_LC_b" then
-		local ammo_name, ammo_count = nil, 0
-		if not inv[1].get_inventory(1).is_empty() then
-			ammo_name = inv[1].get_inventory(1)[1].prototype.name
-			for _, x in pairs(ammo_list.capsules) do
-				if ammo_name == x[2] then
-					ammo_count = inv[1].get_inventory(1)[1].count
-					break
-				end
-			end
-			-- writeDebug("ammo name = " .. ammo_name .. " / count = " .. ammo_count)
+		
+		delay = 3 * 2 -- 2
+		
+		if not turrets.etc then
+			turrets.etc = {inv_sync = {0}}
 		end
+		if not ammo_list.capsules then
+			input_ammo()
+		end
+		turrets.etc.inv_sync[1] = ammo_manager(inv[1].get_inventory(1), base.get_inventory(1), turrets.etc.inv_sync[1], ammo_list.capsules)
+		-- writeDebug("sync = " .. turrets.etc.inv_sync[1])
 		
-		base.get_inventory(1).clear()
-		if ammo_count > 0 then base.get_inventory(1).insert({name = "dummy", count = ammo_count}) end
-		
-		if ammo_count > 0 then
+		if turrets.etc.inv_sync[1] > 0 then
 			
-			local range = 30
+			local range = 35
 			local pos = base.position
 			
 			-- Find Target
-			local target = base.surface.find_nearest_enemy{position = pos, max_distance = range}
+			-- local target = base.surface.find_nearest_enemy{position = pos, max_distance = range}
+			local target = base.surface.find_enemy_units(pos, range)
 			
 			if target ~= nil then
-				-- Attack Target
-				base.surface.create_entity({name = ammo_name, position = pos, force = base.force, target = target, speed = 0.75})
-				base.surface.create_entity({name = "at_LC_turret_sound", position = pos})
-				
-				-- Reduce Ammo
-				base.remove_item({name = "dummy", count = 1})
-				inv[1].remove_item({name = ammo_name, count = 1})
-				
-				-- Delay between shots
-				delay = 3 * 2 -- 2
+				delay = 3 * 1 -- 2
 			end
 		end
 		
@@ -1104,39 +1158,15 @@ function Turrets_Action(turrets)
 		if not ammo_list.rockets then -- if not (ammo_list.shells and ammo_list.rockets) then
 			input_ammo()
 		end
-		local ammo_name, ammo_count, ammo_type = {nil, nil}, {0, 0}, {"shells", "rockets"}
+		local ammo_type = {"shells", "rockets"}
 		for i = 1, 2 do
-			spe[i].get_inventory(1).clear()
-			if not inv[i].get_inventory(1).is_empty() then
-				ammo_name[i] = inv[i].get_inventory(1)[1].prototype.name
-				for _, x in pairs(ammo_list[ammo_type[i]]) do
-					if ammo_name[i] == x[1] then
-						ammo_count[i] = inv[i].get_inventory(1)[1].count
-						break
-					end
-				end
-				-- writeDebug("ammo name = " .. ammo_name[i] .. " / count = " .. ammo_count[i])
-				if not spe[i].get_inventory(1).is_empty() then
-					if spe[i].get_inventory(1)[1].prototype.name == ammo_name[i] then
-						turrets.etc.inv_sync[i] = ammo_count[i] + spe[i].get_inventory(1)[1].count - turrets.etc.inv_sync[i]
-						ammo_count[i] = turrets.etc.inv_sync[i]
-					else
-						turrets.etc.inv_sync[i] = ammo_count[i]
-					end
-				end
-				spe[i].get_inventory(1).insert({name = ammo_name[i], count = ammo_count[i]})
-			end
-			base.get_inventory(1).clear()
-			if ammo_count[1] > 0 then base.get_inventory(1).insert({name = "dummy", count = 10}) end
+			turrets.etc.inv_sync[i] = ammo_manager(inv[i].get_inventory(1), spe[i].get_inventory(1), turrets.etc.inv_sync[i], ammo_list[ammo_type[i]])
 		end
 		
 		local maxrange = 50
 		delay = 3
 		
-		-- local body_direction = turrets[1].direction
-		-- direction = 0(north) ~ 7
-		
-		if (ammo_count[1] + ammo_count[2]) > 0 then
+		if (turrets.etc.inv_sync[1] + turrets.etc.inv_sync[2]) > 0 then
 		
 			local pos = base.position
 			local target = base.surface.find_enemy_units(pos, maxrange)

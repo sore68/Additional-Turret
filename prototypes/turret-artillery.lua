@@ -401,7 +401,7 @@ data:extend({
 },
 {
 	type = "projectile",
-	name = "target-capsule",
+	name = "target-marker",
 	flags = {"not-on-map"},
 	acceleration = 0.005,
 	action =
@@ -505,7 +505,7 @@ data:extend({
 },
 {
 	type = "recipe",
-	name = "target-capsule",
+	name = "target-marker",
 	enabled = false,
 	energy_required = 12,
 	ingredients = 
@@ -515,7 +515,7 @@ data:extend({
 		{"explosives", 5},
 		{"alien-artifact", 5}
 	},
-	result = "target-capsule",
+	result = "target-marker",
 },
 })
 
@@ -608,7 +608,7 @@ data:extend({
 
 {
 	type = "capsule",
-	name = "target-capsule",
+	name = "target-marker",
 	icon = "__Additional-Turret__/graphics/icon/ammo-target-capsule-icon.png",
 	flags = {"goes-to-quickbar"},
 	capsule_action =
@@ -631,7 +631,7 @@ data:extend({
 					action_delivery =
 					{
 						type = "projectile",
-						projectile = "target-capsule",
+						projectile = "target-marker",
 						starting_speed = 0.3
 					}
 				}
@@ -639,7 +639,7 @@ data:extend({
 		}
 	},
 	subgroup = "capsule",
-	order = "g[target-capsule]",
+	order = "g[target-marker]",
 	stack_size = 20
 },
 })
