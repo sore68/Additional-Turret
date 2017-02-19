@@ -69,7 +69,7 @@ for _, x in pairs(data.raw.projectile) do
 		x.action[#x.action+1] = artillery_area_damage{perimeter = 5, amount = 100 * damage_modif}
 	end
 	if x.name == "Artillery_mk1_Ammo" then
-		x.action[#x.action+1] = artillery_area_damage{perimeter = 15, amount = 500 * damage_modif}
+		x.action[#x.action+1] = artillery_area_damage{perimeter = 15, amount = 300 * damage_modif}
 	end
 	if x.name == "Artillery_mk2_Ammo" then
 		x.action[#x.action+1] = artillery_area_damage{perimeter = 30, amount = 500 * damage_modif}

@@ -22,38 +22,48 @@ data:extend({
 	order = "g[plastic-bar]-a[piranha-core]",
 	stack_size = 10
 },
+
 -- corpse
 {
-    type = "corpse",
-    name = "at-scorchmark",
-    icon = "__Additional-Turret__/graphics/icon/test.png",
-    flags = {"placeable-neutral", "not-on-map", "placeable-off-grid"},
-    collision_box = {{-1.5, -1.5}, {1.5, 1.5}},
-    collision_mask = {"doodad-layer", "not-colliding-with-itself"},
-    selection_box = {{-1, -1}, {1, 1}},
-    selectable_in_game = false,
-    time_before_removed = 60 * 60 * 10, -- 10 minutes
-    final_render_layer = "ground_patch_higher2",
-    subgroup = "remnants",
-    order="d[remnants]-b[scorchmark]-a[at]",
-    ground_patch =
-    {
-      sheet =
-      {
-        width = 400,
-        height = 368,
-        frame_count = 1,
-        direction_count = 1,
-        -- x = 110 * 2,
-        filename = "__Additional-Turret__/graphics/crater.png",
-        variation_count = 1
-      }
-    },
-  }
-})
+	type = "corpse",
+	name = "at-scorchmark",
+	icon = "__Additional-Turret__/graphics/icon/test.png",
+	flags = {"placeable-neutral", "not-on-map", "placeable-off-grid"},
+	collision_box = {{-1.5, -1.5}, {1.5, 1.5}},
+	collision_mask = {"doodad-layer", "not-colliding-with-itself"},
+	selection_box = {{-1, -1}, {1, 1}},
+	selectable_in_game = false,
+	time_before_removed = 60 * 60 * 10, -- 10 minutes
+	final_render_layer = "ground_patch_higher2",
+	subgroup = "remnants",
+	order="d[remnants]-b[scorchmark]-b[at-scorchmark]",
+	ground_patch =
+	{
+		sheet =
+		{
+			width = 400,
+			height = 368,
+			frame_count = 1,
+			direction_count = 1,
+			filename = "__Additional-Turret__/graphics/crater.png",
+			variation_count = 1
+		}
+	},
+	ground_patch_higher =
+	{
+		sheet =
+		{
+			width = 400,
+			height = 368,
+			frame_count = 1,
+			direction_count = 1,
+			filename = "__Additional-Turret__/graphics/crater.png",
+			variation_count = 1
+		}
+	}
+},
 
 -- category
-data:extend({
 {
 	type = "ammo-category",
 	name = "artillery-mk1-shell"
@@ -66,21 +76,14 @@ data:extend({
 	type = "ammo-category",
 	name = "dummy"
 },
-})
 
 -- damage type
-data:extend(
 {
-	{
-		type = "damage-type",
-		name = "sore-acid"
-	},
-}
-)
-
+	type = "damage-type",
+	name = "sore-acid"
+},
 
 -- recipe
-data:extend({
 {
 	type = "recipe",
 	name = "piranha-solution",
@@ -99,7 +102,6 @@ data:extend({
 		{type="fluid", name="piranha-solution", amount=40},
 	},
 },
-
 {
 	type = "recipe",
 	name = "piranha-core",

@@ -131,6 +131,17 @@ data:extend({
 					type = "damage",
 					damage = { amount = 25 , type = "explosion"}
 				},
+			}
+		}
+	},
+	final_action =
+	{
+		type = "direct",
+		action_delivery =
+		{
+			type = "instant",
+			target_effects =
+			{
 				{
 					type = "create-entity",
 					entity_name = "small-scorchmark",
@@ -330,6 +341,17 @@ data:extend({
 					type = "damage",
 					damage = {amount = 30, type = "explosion"}
 				},
+			}
+		}
+	},
+	final_action =
+	{
+		type = "direct",
+		action_delivery =
+		{
+			type = "instant",
+			target_effects =
+			{
 				{
 					type = "create-entity",
 					entity_name = "small-scorchmark",
@@ -513,24 +535,6 @@ data:extend({
 },
 
 ------------- dummy
--- {
-	-- type = "projectile",
-	-- name = "dummy_capsule",
-	-- flags = {"not-on-map"},
-	-- acceleration = 0,
-	-- action =
-	-- {
-		-- type = "direct",
-		-- action_delivery =
-		-- {
-			-- type = "instant",
-			-- target_effects =
-			-- {
-			-- }
-		-- }
-	-- },
-	-- animation = animation_fake,
--- },
 {
 	type = "projectile",
 	name = "dummy_entity",
@@ -632,6 +636,22 @@ data:extend({
 	{
 		cannon_cluster{cluster_count=5, distance=6, distance_deviation=4, projectile="artillery-cluster", direction_deviation=0.6, starting_speed=1.5 ,starting_speed_deviation=0.5}
 	},
+	final_action =
+	{
+		type = "direct",
+		action_delivery =
+		{
+			type = "instant",
+			target_effects =
+			{
+				{
+					type = "create-entity",
+					entity_name = "small-scorchmark",
+					check_buildability = true
+				}
+			}
+		}
+	},
 	
 	animation = 
 	{ 
@@ -692,6 +712,22 @@ data:extend({
 			}
 		},
 		cannon_cluster{cluster_count=5, distance=20, distance_deviation=6, projectile="Artillery_mk1_Ammo", direction_deviation=0.6, starting_speed=1.7, starting_speed_deviation=0.7}
+	},
+	final_action =
+	{
+		type = "direct",
+		action_delivery =
+		{
+			type = "instant",
+			target_effects =
+			{
+				{
+					type = "create-entity",
+					entity_name = "at-scorchmark",
+					check_buildability = true
+				}
+			}
+		}
 	},
 	
 	animation = 

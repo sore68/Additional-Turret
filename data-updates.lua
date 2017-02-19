@@ -5,6 +5,7 @@ for _, capsule in pairs(data.raw.capsule) do
 				{
 					type = "ammo",
 					name = "at_" .. capsule.name,
+					localised_name = {"item-name.dummy"},
 					icon = capsule.icon,
 					flags = {"goes-to-main-inventory", "hidden"},
 					ammo_type = {
