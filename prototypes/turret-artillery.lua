@@ -1,3 +1,9 @@
+require ("prototypes.others")
+
+-- radar
+-- 2 / 2 4 6 8
+-- 5 / 2 5 8 11
+
 local at_A1_turret_shift = {0.5, -2.25}
 local at_A2_turret_shift = {0.5, -2.25}
 
@@ -115,46 +121,11 @@ data:extend({
 },
 
 {
-	type = "ammo-turret",
-	name = "at_A1_t",
-	icon = "__Additional-Turret__/graphics/icon/turret-artillery-big-mk1-icon.png",
-	flags = {"placeable-neutral", "placeable-player", "player-creation"},
-	selectable_in_game = false,
-	order = "b[turret]-d[artillery]-a[heavy]",
-	open_sound = { filename = "__Additional-Turret__/sound/Artillery_open_sound.ogg", volume = 0.7 },
-	max_health = 600,
-	corpse = "big-remnants",
-	dying_explosion = "massive-explosion",
-	collision_box = {{ -3.65, -2.65}, {3.65, 2.65}},
-	-- selection_box = {{ -4, -3}, {4, 3}},
-	folding_speed = 0.04,
-	inventory_size = 1,
-	automated_ammo_count = 10,
-	emissions_per_tick = 0.5,
-	
-	folded_animation = at_A1_turret_attack{},
-	folding_animation = at_A1_turret_attack{},
-	
-	vehicle_impact_sound =	{ filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
-
-	attack_parameters =
-	{
-		type = "projectile",
-		ammo_category = "artillery-mk1-shell",
-		cooldown = 1500,
-		range = 0,
-		projectile_creation_distance = 1.8,
-		action ={},
-	},
-	call_for_help_radius = 40
-},
-
-{
 	type = "logistic-container",
 	name = "at_A1_i1",
 	icon = "__Additional-Turret__/graphics/icon/turret-artillery-big-mk1-icon.png",
 	flags = {"placeable-neutral", "placeable-player", "player-creation", "placeable-off-grid"},
-	selectable_in_game = false,
+	-- selectable_in_game = false,
 	order = "b[turret]-d[artillery]-a[heavy]",
 	max_health = 300,
 	corpse = "big-remnants",
@@ -164,7 +135,30 @@ data:extend({
 	fast_replaceable_group = "container",
 	inventory_size = 1,
 	logistic_mode = "requester",
-	picture = at_A1_turret_attack{},
+	-- picture = at_A1_turret_attack{},
+	picture = {
+		filename = "__base__/graphics/entity/logistic-chest/logistic-chest-requester.png",
+		priority = "extra-high",
+		width = 38,
+		height = 32,
+		shift = {0.09375, 0}
+		-- shift = {-0.40625, 1.5}
+	},
+    circuit_wire_connection_point =
+    {
+      shadow =
+      {
+        red = {0.734375, 0.453125},
+        green = {0.609375, 0.515625},
+      },
+      wire =
+      {
+        red = {0.40625, 0.21875},
+        green = {0.40625, 0.375},
+      }
+    },
+    circuit_wire_max_distance = 7.5,
+    circuit_connector_sprites = get_circuit_connector_sprites({0.1875, 0.15625}, nil, 18),
 },
 
 {
@@ -179,8 +173,8 @@ data:extend({
 	collision_box = {{ -3.6, -2.6}, {3.6, 2.6}},
 	-- selection_box = {{ -4, -3}, {4, 3}},
 	order = "b[turret]-d[artillery]-a[heavy]",
-	energy_per_sector = "10MJ",
-	max_distance_of_nearby_sector_revealed = 3,
+	energy_per_sector = "20MJ",
+	max_distance_of_nearby_sector_revealed = 2,
 	max_distance_of_sector_revealed = 8,
 	energy_per_nearby_scan = "1MW",
 	energy_source =
@@ -189,7 +183,8 @@ data:extend({
 		usage_priority = "secondary-input"
 	},
 	energy_usage = "1MW",
-	pictures = blank{},
+	-- pictures = blank{},
+	pictures = at_A1_turret_attack{},
 
 	working_sound =
 	{
@@ -264,46 +259,11 @@ data:extend({
 },
 
 {
-	type = "ammo-turret",
-	name = "at_A2_t",
-	icon = "__Additional-Turret__/graphics/icon/turret-artillery-big-mk2-icon.png",
-	flags = {"placeable-neutral", "placeable-player", "player-creation"},
-	selectable_in_game = false,
-	order = "b[turret]-d[artillery]-b[experimental]",
-	open_sound = { filename = "__Additional-Turret__/sound/Artillery_open_sound.ogg", volume = 1 },
-	max_health = 1500,
-	corpse = "big-remnants",
-	dying_explosion = "massive-explosion",
-	collision_box = {{ -3.65, -2.65}, {3.65, 2.65}},
-	-- selection_box = {{ -4, -3}, {4, 3}},
-	folding_speed = 0.04,
-	inventory_size = 1,
-	automated_ammo_count = 10,
-	emissions_per_tick = 0.5,
-	
-	folded_animation = at_A2_turret_attack{},
-	folding_animation = at_A2_turret_attack{},
-	
-	vehicle_impact_sound =	{ filename = "__base__/sound/car-metal-impact.ogg", volume = 0.65 },
-
-	attack_parameters =
-	{
-		type = "projectile",
-		ammo_category = "artillery-mk1-shell",
-		cooldown = 1500,
-		range = 0,
-		projectile_creation_distance = 1.8,
-		action ={},
-	},
-	call_for_help_radius = 40
-},
-
-{
 	type = "logistic-container",
 	name = "at_A2_i1",
 	icon = "__Additional-Turret__/graphics/icon/turret-artillery-big-mk2-icon.png",
 	flags = {"placeable-neutral", "placeable-player", "player-creation", "placeable-off-grid"},
-	selectable_in_game = false,
+	-- selectable_in_game = false,
 	order = "b[turret]-d[artillery]-b[experimental]",
 	max_health = 300,
 	corpse = "big-remnants",
@@ -313,7 +273,30 @@ data:extend({
 	fast_replaceable_group = "container",
 	inventory_size = 1,
 	logistic_mode = "requester",
-	picture = at_A2_turret_attack{},
+	-- picture = at_A2_turret_attack{},
+	picture = {
+		filename = "__base__/graphics/entity/logistic-chest/logistic-chest-requester.png",
+		priority = "extra-high",
+		width = 38,
+		height = 32,
+		shift = {0.09375, 0}
+		-- shift = {-0.40625, 1.5}
+	},
+    circuit_wire_connection_point =
+    {
+      shadow =
+      {
+        red = {0.734375, 0.453125},
+        green = {0.609375, 0.515625},
+      },
+      wire =
+      {
+        red = {0.40625, 0.21875},
+        green = {0.40625, 0.375},
+      }
+    },
+    circuit_wire_max_distance = 7.5,
+    circuit_connector_sprites = get_circuit_connector_sprites({0.1875, 0.15625}, nil, 18),
 },
 
 {
@@ -329,8 +312,8 @@ data:extend({
 	-- selection_box = {{ -4, -3}, {4, 3}},
 	order = "b[turret]-d[artillery]-b[experimental]",
 	energy_per_sector = "100MJ",
-	max_distance_of_nearby_sector_revealed = 6,
-	max_distance_of_sector_revealed = 16,
+	max_distance_of_nearby_sector_revealed = 4,
+	max_distance_of_sector_revealed = 11,
 	energy_per_nearby_scan = "5MW",
 	energy_source =
 	{
@@ -338,7 +321,8 @@ data:extend({
 		usage_priority = "secondary-input"
 	},
 	energy_usage = "10MW",
-	pictures = blank{},
+	-- pictures = blank{},
+	pictures = at_A2_turret_attack{},
 
 	working_sound =
 	{
@@ -485,7 +469,7 @@ data:extend({
 		{"battery", 20},
 		{"radar", 20},
 		{"processing-unit", 30},
-		{"alien-artifact", 30}
+		{"advanced-circuit", 30}
 	},
 	result = "at_A2_b",
 },
@@ -499,7 +483,7 @@ data:extend({
 		{"Artillery_mk1_Ammo", 5},
 		{"explosives", 5},
 		{"steel-plate", 2},
-		{"alien-artifact", 2}
+		{"electronic-circuit", 2}
 	},
 	result = "Artillery_mk2_Ammo",
 },
@@ -513,7 +497,7 @@ data:extend({
 		{"poison-capsule", 1},
 		{"slowdown-capsule", 1},
 		{"explosives", 5},
-		{"alien-artifact", 5}
+		{"electronic-circuit", 5}
 	},
 	result = "target-marker",
 },

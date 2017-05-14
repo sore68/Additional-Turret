@@ -299,33 +299,55 @@ data:extend({
 	stack_size = 75
 },
 {
-	type = "ammo",
-	name = "acid-thrower-ammo",
-	icon = "__Additional-Turret__/graphics/icon/ammo-acid-thrower-icon.png",
-	flags = {"goes-to-main-inventory"},
-	ammo_type =
-	{
-		category = "flame-thrower",
-		target_type = "position",
-		clamp_position = true,
-		
-		action =
-		{
-			type = "direct",
-			action_delivery =
-			{
-				type = "stream",
-				stream = "handheld-flamethrower-acid-stream",
-				max_length = 15,
-				duration = 160,
-			}
-		}
-	},
-	magazine_size = 100,
-	subgroup = "ammo",
-	order = "e[flame-thrower]-a[acid-thrower]",
-	stack_size = 50
-},
+    type = "ammo",
+    name = "acid-thrower-ammo",
+    icon = "__Additional-Turret__/graphics/icon/ammo-acid-thrower-icon.png",
+    flags = {"goes-to-main-inventory"},
+    ammo_type =
+    {
+      {
+        source_type = "default",
+        category = "flamethrower",
+        target_type = "position",
+        clamp_position = true,
+
+        action =
+        {
+          type = "direct",
+          action_delivery =
+          {
+            type = "stream",
+            stream = "handheld-flamethrower-acid-stream",
+            max_length = 15,
+            duration = 160,
+          }
+        }
+      },
+      {
+        source_type = "vehicle",
+        consumption_modifier = 1.125,
+        category = "flamethrower",
+        target_type = "position",
+        clamp_position = true,
+
+        action =
+        {
+          type = "direct",
+          action_delivery =
+          {
+            type = "stream",
+            stream = "tank-flamethrower-fire-stream",
+            max_length = 9,
+            duration = 160,
+          }
+        }
+      }
+    },
+    magazine_size = 100,
+    subgroup = "ammo",
+    order = "e[flamethrower]-a[acid-thrower]",
+    stack_size = 100
+  },
 
 ------------- dummy
 {

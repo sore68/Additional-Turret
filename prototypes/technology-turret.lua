@@ -21,7 +21,7 @@ return
 			{"science-pack-1", 1},
 			{"science-pack-2", 1},
 			{"science-pack-3", 1},
-			{"alien-science-pack", 1},
+			{"military-science-pack", 1},
 		},
 		time = inputs.times,
 	},
@@ -57,7 +57,7 @@ return
 			{"science-pack-1", 1},
 			{"science-pack-2", 1},
 			{"science-pack-3", 1},
-			{"alien-science-pack", 1},
+			{"military-science-pack", 1},
 		},
 		time = inputs.times,
 	},
@@ -87,7 +87,7 @@ turret_unlock_1{name = "turret-mk3-unlock", icon = "__Additional-Turret__/graphi
 
 turret_unlock_1{name = "acid-thrower", icon = "__Additional-Turret__/graphics/technology/acid-thrower.png",
 		recipe = "at-acidthrower-turret",
-		prerequisites = {"flame-thrower"},
+		prerequisites = {"flamethrower"},
 		count = 30, times = 10, order = "e-c-b-a"},
 
 turret_unlock_1{name = "advanced-laser-research", icon = "__Additional-Turret__/graphics/technology/ad-laser-turret.png",
@@ -146,10 +146,10 @@ data:extend({
     count = 500,
     ingredients =
     {
-      {"alien-science-pack", 1},
       {"science-pack-1", 1},
       {"science-pack-2", 1},
-      {"science-pack-3", 1}
+      {"science-pack-3", 1},
+	  {"military-science-pack", 1}
     },
     time = 45
   },

@@ -1,6 +1,6 @@
 require("prototypes.acid")
 require("prototypes.others")
--- require("prototypes.reinforced-wall")
+-- require("prototypes.wall")
 
 require("prototypes.turret-artillery")
 require("prototypes.turret-cannon")

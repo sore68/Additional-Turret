@@ -1,3 +1,5 @@
+require ("prototypes.others")
+
 function cr_place(inputs)
 return
 {
@@ -151,13 +153,13 @@ data:extend({
 	name = "at_CR_s1",
 	icon = "__Additional-Turret__/graphics/icon/turret-cr-icon.png",
 	-- flags = {"placeable-neutral", "player-creation", "not-repairable"},
-	flags = {"placeable-neutral", "placeable-player", "player-creation"},
+	flags = {"placeable-neutral", "placeable-player", "player-creation", "placeable-off-grid"},
 	selectable_in_game = false,
 	order = "b[turret]-c[base]-e[mk3]",
 	max_health = 1000,
 	corpse = "big-remnants",
 	dying_explosion = "massive-explosion",
-	collision_box = {{-1.7, -1.7 }, {1.7, 1.7}},
+	collision_box = {{-1.7, -1.4 }, {1.7, 1.2}},
 	selection_box = {{-2, -2 }, {2, 2}},
 	rotation_speed = 0.006,
 	preparing_speed = 0.06,
@@ -200,13 +202,13 @@ data:extend({
 	name = "at_CR_s2",
 	icon = "__Additional-Turret__/graphics/icon/turret-cr-icon.png",
 	-- flags = {"placeable-player", "player-creation"},
-	flags = {"placeable-neutral", "placeable-player", "player-creation"},
+	flags = {"placeable-neutral", "placeable-player", "player-creation", "placeable-off-grid"},
 	selectable_in_game = false,
 	order = "b[turret]-c[base]-e[mk3]",
 	max_health = 1000,
 	corpse = "big-remnants",
 	dying_explosion = "massive-explosion",
-	collision_box = {{-1.7, -1.7 }, {1.7, 1.7}},
+	collision_box = {{-1.7, -1.4 }, {1.7, 1.2}},
 	selection_box = {{-2, -2 }, {2, 2}},
 	rotation_speed = 0.012,
 	preparing_speed = 0.08,
@@ -263,6 +265,21 @@ data:extend({
 		shift = {0.09375, 0}
 		-- shift = {-0.40625, 1.5}
 	},
+    circuit_wire_connection_point =
+    {
+      shadow =
+      {
+        red = {0.734375, 0.453125},
+        green = {0.609375, 0.515625},
+      },
+      wire =
+      {
+        red = {0.40625, 0.21875},
+        green = {0.40625, 0.375},
+      }
+    },
+    circuit_wire_max_distance = 7.5,
+    circuit_connector_sprites = get_circuit_connector_sprites({0.1875, 0.15625}, nil, 18),
 },
 {
 	type = "logistic-container",
@@ -286,6 +303,21 @@ data:extend({
 		shift = {0.09375, 0}
 		-- shift = {0.59375, 1.5}
 	},
+    circuit_wire_connection_point =
+    {
+      shadow =
+      {
+        red = {0.734375, 0.453125},
+        green = {0.609375, 0.515625},
+      },
+      wire =
+      {
+        red = {0.40625, 0.21875},
+        green = {0.40625, 0.375},
+      }
+    },
+    circuit_wire_max_distance = 7.5,
+    circuit_connector_sprites = get_circuit_connector_sprites({0.1875, 0.15625}, nil, 18),
 }
 })
 for i = 1, 2 do

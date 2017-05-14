@@ -1,14 +1,26 @@
 local math3d = require "math3d"
 local laser_acceleration = 0-- .05
 
-local electronic_tint = {r = 0.5, g = 0.5, b = 0.5, a = 0.3}
-local electronic_duration_in_ticks = 0.5 * 60 --1*60 = 1s
-local electronic_damage_per_tick = { amount = 5 / 60, type = "electric" }
-
--- local poison_tint = {r = 0.1, g = 0.5, b = 0.3, a = 0.5}
--- local poison_duration_in_ticks = 10*60
--- local poison_damage_per_tick = { amount = 5 / 60, type = "poison" }
-
+local sticker_option = {
+	electronic = {
+		tint = {r = 0.5, g = 0.5, b = 0.5, a = 0.3},
+		target_movement_modifier = 0.4,
+		duration_in_ticks = 0.5 * 60,
+		damage_per_tick = { amount = 5 / 60, type = "electric" }
+	},
+	poison = {
+		tint = {r = 0.5, g = 0.5, b = 0.5, a = 0.3},
+		target_movement_modifier = 0.8,
+		duration_in_ticks = 10 * 60,
+		damage_per_tick = { amount = 50 / 60, type = "poison" }
+	},
+	wall_electroic = {
+		tint = {r = 0.8, g = 0.8, b = 0.8, a = 0.5},
+		target_movement_modifier = 0.6,
+		duration_in_ticks = 0.3 * 60,
+		damage_per_tick = { amount = 35 / 60, type = "electric" }
+	}
+}
 
 
 local animation_rocket = {
@@ -829,7 +841,30 @@ data:extend({
 },
 })
 
-data:extend({
-sticker_set{name="electronic-sticker", filename="__Additional-Turret__/graphics/entity/spark.png", line_length=5, width=64, height=64, frame_count=5, direction_count=1, scale=0.5, tint = electronic_tint, duration_in_ticks=electronic_duration_in_ticks, target_movement_modifier=0.4, damage_per_tick=electronic_damage_per_tick},
--- sticker_set{name="poison-sticker", filename="__Additional-Turret__/graphics/entity/spark.png", line_length=5, width=64, height=64, frame_count=5, direction_count=1, scale=0.5, tint = poison_tint, duration_in_ticks=poison_duration_in_ticks, target_movement_modifier=0.4, damage_per_tick=poison_damage_per_tick},
+data:extend
+({
+	sticker_set{
+		name="electronic-sticker", filename="__Additional-Turret__/graphics/entity/spark.png",
+		line_length=5, width=64, height=64, frame_count=5, direction_count=1, scale=0.5,
+		target_movement_modifier = sticker_option.electronic.target_movement_modifier,
+		tint = sticker_option.electronic.tint,
+		duration_in_ticks = sticker_option.electronic.duration_in_ticks,
+		damage_per_tick = sticker_option.electronic.damage_per_tick
+	},
+
+	sticker_set{name="poison-sticker", filename="__Additional-Turret__/graphics/entity/spark.png",
+		line_length=5, width=64, height=64, frame_count=5, direction_count=1, scale=0.5,
+		target_movement_modifier = sticker_option.poison.target_movement_modifier,
+		tint = sticker_option.poison.tint,
+		duration_in_ticks = sticker_option.poison.duration_in_ticks,
+		damage_per_tick = sticker_option.poison.damage_per_tick
+	},
+	
+	sticker_set{name="wall-electroic-sticker", filename="__Additional-Turret__/graphics/entity/spark.png",
+		line_length=5, width=64, height=64, frame_count=5, direction_count=1, scale=0.5,
+		target_movement_modifier = sticker_option.wall_electroic.target_movement_modifier,
+		tint = sticker_option.wall_electroic.tint,
+		duration_in_ticks = sticker_option.wall_electroic.duration_in_ticks,
+		damage_per_tick = sticker_option.wall_electroic.damage_per_tick
+	},
 })

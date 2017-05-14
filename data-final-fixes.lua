@@ -69,18 +69,38 @@ for _, x in pairs(data.raw.projectile) do
 		x.action[#x.action+1] = artillery_area_damage{perimeter = 5, amount = 100 * damage_modif}
 	end
 	if x.name == "Artillery_mk1_Ammo" then
-		x.action[#x.action+1] = artillery_area_damage{perimeter = 15, amount = 300 * damage_modif}
+		x.action[#x.action+1] = artillery_area_damage{perimeter = 15, amount = 200 * damage_modif}
 	end
 	if x.name == "Artillery_mk2_Ammo" then
-		x.action[#x.action+1] = artillery_area_damage{perimeter = 30, amount = 500 * damage_modif}
+		x.action[#x.action+1] = artillery_area_damage{perimeter = 30, amount = 400 * damage_modif}
 	end
 end
-for _, x in pairs(data.raw["electric-turret"]) do
-	if x.name == "at_LC_s" then
-		x.attack_parameters.damage_modifier = 2 * damage_modif -- 3
+if damage_modif >= 2 then
+	local tur_name = {
+						elec = {"at-advanced-laser", "at-beam-turret-mk1", "at-beam-turret-mk2"}, 
+						ammo = {"at-cannon-turret-mk1", "at-cannon-turret-mk2", "at-rocket-turret-mk1", "at-rocket-turret-mk2", "at_CR_s1", "at_CR_s2"}
+					}
+	for _, x in pairs(data.raw["electric-turret"]) do
+		for i = 1, #tur_name.elec do
+			if x.name == tur_name.elec[i] then
+				-- x.attack_parameters.damage_modifier = 1 + (damage_modif / 5)
+				x.attack_parameters.damage_modifier = x.attack_parameters.damage_modifier * damage_modif * 0.5
+			end
+		end
+	end
+	for _, x in pairs(data.raw["ammo-turret"]) do
+		for i = 1, #tur_name.ammo do
+			if x.name == tur_name.ammo[i] then
+				x.attack_parameters.damage_modifier = 1 + (damage_modif / 10)
+			end
+		end
 	end
 end
-local fluid_container = {{"sulfuric-nitric-acid", 2}, {"nitric-acid", 1.5}, {"alien-acid", 3}, {"liquid-hydrochloric-acid", 1.5}, {"liquid-hydrofluoric-acid", 1.2}, {"liquid-perchloric-acid", 1.3}, {"liquid-nitric-acid", 1.5}, {"liquid-sulfuric-acid", 1.5}}
+
+local fluid_container = {
+	{"nitric-acid", 1.5}, {"alien-acid", 3}, --bob
+	{"liquid-hydrochloric-acid", 1.5}, {"liquid-hydrofluoric-acid", 1.2}, {"liquid-perchloric-acid", 1.3}, {"liquid-nitric-acid", 1.5}, {"liquid-sulfuric-acid", 1.5} --angel
+}
 for _, fluid in pairs(data.raw.fluid) do
 	for i = 1, #fluid_container do
 		if fluid.name == fluid_container[i][1] then

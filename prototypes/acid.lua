@@ -1122,6 +1122,7 @@ data:extend({
 	inventory_size = 1,
 	automated_ammo_count = 10,
 	attacking_animation_fade_out = 10,
+    turret_base_has_direction = true,
 	
 	resistances =
 	{
@@ -1365,7 +1366,7 @@ data:extend({
 	attack_parameters =
 	{
 		type = "stream",
-		ammo_category = "flame-thrower",
+		ammo_category = "flamethrower",
 		cooldown = 4,
 		range = 30,
 		min_range = 6,
@@ -1389,7 +1390,7 @@ data:extend({
 		
 		ammo_type =
 		{
-			category = "flame-thrower",
+			category = "flamethrower",
 			action =
 			{
 				type = "direct",

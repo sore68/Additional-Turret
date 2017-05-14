@@ -1,4 +1,4 @@
-
+require ("prototypes.others")
 
 local offset = 0
 
@@ -357,26 +357,41 @@ data:extend({
 	corpse = "big-remnants",
 	dying_explosion = "massive-explosion",
 	collision_box = {{-0.5, -0.5 }, {0.5, 0.5}}, --{{-3.2, -3.2 }, {3.2, 3.2}},
-	selection_box = {{-0.5, -0.5 }, {0.5, 2.5}},
+	selection_box = {{-0.5, -0.5 }, {0.5, 0.5}},
 	fast_replaceable_group = "container",
 	inventory_size = 1,
 	logistic_mode = "requester",
-	picture = at_LC_turret_door_open{},
-	-- picture = {
-		-- filename = "__base__/graphics/entity/logistic-chest/logistic-chest-requester.png",
-		-- priority = "extra-high",
-		-- width = 38,
-		-- height = 32,
-		-- shift = {0.09375, 2}
-	-- }
-}
+	-- picture = at_LC_turret_door_open{},
+	picture = {
+		filename = "__base__/graphics/entity/logistic-chest/logistic-chest-requester.png",
+		priority = "extra-high",
+		width = 38,
+		height = 32,
+		shift = {0.09375, 0}
+	},
+    circuit_wire_connection_point =
+    {
+      shadow =
+      {
+        red = {0.734375, 0.453125},
+        green = {0.609375, 0.515625},
+      },
+      wire =
+      {
+        red = {0.40625, 0.21875},
+        green = {0.40625, 0.375},
+      }
+    },
+    circuit_wire_max_distance = 7.5,
+    circuit_connector_sprites = get_circuit_connector_sprites({0.1875, 0.15625}, nil, 18),
+},
+laser_turret{name = "at_LC_s"},
+laser_copse{name = "at_LC_c"}
 })
--- for i = 1, 4 do
-	data:extend({
-		laser_turret{name = "at_LC_s"},
-		laser_copse{name = "at_LC_c"}
-	})
--- end
+-- data:extend({
+	-- laser_turret{name = "at_LC_s"},
+	-- laser_copse{name = "at_LC_c"}
+-- })
 
 
 --item
@@ -405,7 +420,7 @@ data:extend({
 	{
 		{"laser-turret", 4},
 		{"steel-plate", 8},
-		{"small-pump", 2},
+		{"pump", 2},
 		{"logistic-chest-requester", 1}
 	},
 	result = "at_LC_b",
