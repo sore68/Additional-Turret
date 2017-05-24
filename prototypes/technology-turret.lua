@@ -54,10 +54,8 @@ return
 		count = inputs.count,
 		ingredients =
 		{
-			{"science-pack-1", 1},
+			{"science-pack-1", 2},
 			{"science-pack-2", 1},
-			{"science-pack-3", 1},
-			{"military-science-pack", 1},
 		},
 		time = inputs.times,
 	},
@@ -73,37 +71,37 @@ data:extend({
 turret_unlock_2{name = "turret-mk1-unlock", icon = "__Additional-Turret__/graphics/technology/turret-mk1-tech.png",
 		recipe_1 = "at-cannon-turret-mk1",
 		recipe_2 = "at-rocket-turret-mk1",
-		prerequisites = {"tanks"},
+		prerequisites = {"turrets"},
 		count = 120, times = 45, order = "e-c-c-a"},
 turret_unlock_2{name = "turret-mk2-unlock", icon = "__Additional-Turret__/graphics/technology/turret-mk2-tech.png",
 		recipe_1 = "at-cannon-turret-mk2",
 		recipe_2 = "at-rocket-turret-mk2",
-		prerequisites = {"turret-mk1-unlock"},
+		prerequisites = {"turret-mk1-unlock", "military-2"},
 		count = 180, times = 90, order = "e-c-c-b"},
 turret_unlock_1{name = "turret-mk3-unlock", icon = "__Additional-Turret__/graphics/technology/turret-mk3-tech.png",
 		recipe = "at_CR_b",
-		prerequisites = {"turret-mk2-unlock", "military-4"},
+		prerequisites = {"turret-mk2-unlock", "military-3"},
 		count = 240, times = 90, order = "e-c-c-c"},
 
 turret_unlock_1{name = "acid-thrower", icon = "__Additional-Turret__/graphics/technology/acid-thrower.png",
 		recipe = "at-acidthrower-turret",
 		prerequisites = {"flamethrower"},
-		count = 30, times = 10, order = "e-c-b-a"},
+		count = 70, times = 10, order = "e-c-b-a"},
 
-turret_unlock_1{name = "advanced-laser-research", icon = "__Additional-Turret__/graphics/technology/ad-laser-turret.png",
-		recipe = "at-advanced-laser",
+turret_unlock_2{name = "advanced-laser-research", icon = "__Additional-Turret__/graphics/technology/ad-laser-turret.png",
+		recipe_1 = "at-advanced-laser",
+		recipe_2 = "at-beam-turret-mk1",
 		prerequisites = {"laser"},
-		count = 250, times = 45, order = "a-h-e"},
-turret_unlock_2{name = "beam-research", icon = "__Additional-Turret__/graphics/technology/beam-turret.png",
-		recipe_1 = "at-beam-turret-mk1",
-		recipe_2 = "at-beam-turret-mk2",
-		prerequisites = {"laser"},
+		count = 100, times = 45, order = "a-h-e"},
+turret_unlock_1{name = "beam-research", icon = "__Additional-Turret__/graphics/technology/beam-turret.png",
+		recipe = "at-beam-turret-mk2",
+		prerequisites = {"advanced-laser-research"},
 		count = 300, times = 60, order = "a-h-d"},
 
 turret_unlock_1{name = "capsule-turret", icon = "__Additional-Turret__/graphics/technology/lc-tech.png",
 		recipe = "at_LC_b",
 		prerequisites = {"advanced-laser-research", "military-3"},
-		count = 250, times = 60, order = "e-c-c"},
+		count = 150, times = 60, order = "e-c-c"},
 
 })
 
@@ -143,13 +141,14 @@ data:extend({
   prerequisites = {"upgrade-shells-3"},
   unit =
   {
-    count = 500,
+    count = 250,
     ingredients =
     {
-      {"science-pack-1", 1},
+      {"science-pack-1", 2},
       {"science-pack-2", 1},
-      {"science-pack-3", 1},
-	  {"military-science-pack", 1}
+	  {"science-pack-3", 1},
+	  {"military-science-pack", 2},
+      {"high-tech-science-pack", 1}
     },
     time = 45
   },

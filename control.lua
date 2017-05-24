@@ -1064,10 +1064,11 @@ function Turrets_Action(turrets)
 			end
 			local backer_txt = spe[1].backer_name
 			if not target then
-				if string.find(backer_txt, "%s") then
+				-- if string.find(backer_txt, "%s") then
+				if tonumber(string.sub(backer_txt, 1, string.find(backer_txt, "%s"))) and tonumber(string.sub(backer_txt, string.find(backer_txt, "%s") + 1)) then
 					writeDebug("tonumber true")
-					local target_x = string.sub(backer_txt, 1, string.find(backer_txt, "%s"))
-					local target_y = string.sub(backer_txt, string.find(backer_txt, "%s") + 1)
+					local target_x = tonumber(string.sub(backer_txt, 1, string.find(backer_txt, "%s")))
+					local target_y = tonumber(string.sub(backer_txt, string.find(backer_txt, "%s") + 1))
 					target = {target_x, target_y}
 					spe[1].backer_name = ""
 				else
