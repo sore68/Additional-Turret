@@ -123,6 +123,45 @@ data:extend({
 --------------cannon
 {
 	type = "projectile",
+	name = "small-coal-cannon-shell",
+	flags = {"not-on-map"},
+	acceleration = 0,
+	piercing_damage = 10,
+	action =
+	{
+		type = "direct",
+		action_delivery =
+		{
+			type = "instant",
+			target_effects =
+			{
+				{
+					type = "damage",
+					damage = { amount = 25 , type = "physical"}
+				},
+			}
+		}
+	},
+	final_action =
+	{
+		type = "direct",
+		action_delivery =
+		{
+			type = "instant",
+			target_effects =
+			{
+				{
+					type = "create-entity",
+					entity_name = "small-scorchmark",
+					check_buildability = true
+				}
+			}
+		}
+	},
+	animation = animation_cannon,
+},
+{
+	type = "projectile",
 	name = "small-cannon-shell",
 	flags = {"not-on-map"},
 	acceleration = 0,
@@ -181,18 +220,14 @@ data:extend({
 				{
 					{
 						type = "damage",
-						damage = { amount = 15, type = "physical"}
+						damage = { amount = 40, type = "physical"}
 					},
-					{
-						type = "create-entity",
-						entity_name = "explosion"
-					}
 				}
 			}
 		},
 		{
 			type = "area",
-			perimeter = 4.5,
+			perimeter = 4,
 			action_delivery =
 			{
 				type = "instant",
@@ -200,12 +235,28 @@ data:extend({
 				{
 					{
 						type = "damage",
-						damage = {amount = 40, type = "explosion"}
+						damage = {amount = 80, type = "explosion"}
 					},
 					{
 						type = "create-entity",
 						entity_name = "explosion"
 					}
+				}
+			}
+		}
+	},
+	final_action =
+	{
+		type = "direct",
+		action_delivery =
+		{
+			type = "instant",
+			target_effects =
+			{
+				{
+					type = "create-entity",
+					entity_name = "explosion",
+					check_buildability = true
 				}
 			}
 		}
@@ -227,11 +278,6 @@ data:extend({
 				target_effects =
 				{
 					{
-						type = "create-entity",
-						entity_name = "explosion", --"big-explosion",
-						check_buildability = true
-					},
-					{
 						type = "damage",
 						damage = { amount = 40 , type = "explosion"}
 					},
@@ -239,6 +285,22 @@ data:extend({
 			}
 		},
 		cannon_cluster{projectile = "small-explosive-cannon-shell",},
+	},
+	final_action =
+	{
+		type = "direct",
+		action_delivery =
+		{
+			type = "instant",
+			target_effects =
+			{
+				{
+					type = "create-entity",
+					entity_name = "explosion",
+					check_buildability = true
+				}
+			}
+		}
 	},
 	animation = animation_cannon,
 },
@@ -311,11 +373,6 @@ data:extend({
 						damage = { amount = 20 , type = "explosion"}
 					},
 					{
-						type = "create-entity",
-						entity_name = "explosion", --"big-explosion",
-						check_buildability = true
-					},
-					{
 						type = "create-sticker",
 						sticker = "fire-sticker"
 					},
@@ -328,10 +385,70 @@ data:extend({
 		},
 		cannon_cluster{cluster_count = 5, projectile = "fire-cannon-shell",},
 	},
+	final_action =
+	{
+		type = "direct",
+		action_delivery =
+		{
+			type = "instant",
+			target_effects =
+			{
+				{
+					type = "create-entity",
+					entity_name = "explosion",
+					check_buildability = true
+				}
+			}
+		}
+	},
 	animation = animation_cannon,
 },
 
 --------------rocket
+{
+	type = "projectile",
+	name = "small-coal-rocket",
+	flags = {"not-on-map"},
+	acceleration = 0.01,
+	action =
+	{
+		type = "direct",
+		action_delivery =
+		{
+			type = "instant",
+			target_effects =
+			{
+				{
+					type = "create-entity",
+					entity_name = "explosion"
+				},
+				{
+					type = "damage",
+					damage = {amount = 25, type = "explosion"}
+				},
+			}
+		}
+	},
+	final_action =
+	{
+		type = "direct",
+		action_delivery =
+		{
+			type = "instant",
+			target_effects =
+			{
+				{
+					type = "create-entity",
+					entity_name = "small-scorchmark",
+					check_buildability = true
+				}
+			}
+		}
+	},
+	animation = animation_rocket,
+	shadow = shadow_rocket,
+	smoke = smoke_rocket,
+},
 {
 	type = "projectile",
 	name = "small-rocket",
@@ -351,7 +468,7 @@ data:extend({
 				},
 				{
 					type = "damage",
-					damage = {amount = 30, type = "explosion"}
+					damage = {amount = 75, type = "explosion"}
 				},
 			}
 		}
@@ -384,7 +501,7 @@ data:extend({
 	action =
 	{
 		type = "area",
-		perimeter = 7,
+		perimeter = 6.5,
 		action_delivery =
 		{
 			type = "instant",
@@ -392,7 +509,7 @@ data:extend({
 			{
 				{
 					type = "damage",
-					damage = {amount = 20, type = "explosion"}
+					damage = {amount = 35, type = "explosion"}
 				},
 				{
 					type = "create-entity",

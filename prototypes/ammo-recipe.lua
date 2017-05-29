@@ -1,6 +1,21 @@
 data:extend({
 {
 	type = "recipe",
+	name = "small-coal-cannon-shell",
+	enabled = false,
+	energy_required = 4,
+	ingredients = 
+	{
+		{"coal", 15},
+		{"iron-plate", 4},
+		{"copper-plate", 4},
+	},
+	result = "small-coal-cannon-shell",
+	result_count = 2,
+	requester_paste_multiplier = 10,
+},
+{
+	type = "recipe",
 	name = "small-cannon-shell",
 	enabled = false,
 	energy_required = 4,
@@ -79,6 +94,21 @@ data:extend({
 
 
 
+{
+	type = "recipe",
+	name = "small-coal-rocket",
+	enabled = false,
+	energy_required = 4,
+	ingredients =
+	{
+		{"coal", 15},
+		{"iron-plate", 4},
+		{"copper-plate", 4},
+	},
+	result = "small-coal-rocket",
+	result_count = 2,
+	requester_paste_multiplier = 10,
+},
 {
 	type = "recipe",
 	name = "small-rocket",

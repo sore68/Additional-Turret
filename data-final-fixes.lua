@@ -77,9 +77,14 @@ for _, x in pairs(data.raw.projectile) do
 end
 if damage_modif >= 2 then
 	local tur_name = {
-						elec = {"at-advanced-laser", "at-beam-turret-mk1", "at-beam-turret-mk2"}, 
-						ammo = {"at-cannon-turret-mk1", "at-cannon-turret-mk2", "at-rocket-turret-mk1", "at-rocket-turret-mk2", "at_CR_s1", "at_CR_s2"}
-					}
+		elec = {"at-advanced-laser", "at-beam-turret-mk1", "at-beam-turret-mk2"}, 
+		ammo = {"at-cannon-turret-mk1", "at-cannon-turret-mk2", "at-rocket-turret-mk1", "at-rocket-turret-mk2", "at_CR_s1", "at_CR_s2"}
+	}
+	-- local projectile_name = {
+		-- cannon = {"small-coal-cannon-shell", "small-cannon-shell", "small-explosive-cannon-shell", "cluster-cannon-shell", "fire-cannon-shell", "fire-cluster-cannon-shell"},
+		-- rocket = {"small-coal-rocket", "small-rocket", "small-explosive-rocket", "acid-rocket"}
+	-- }
+	
 	for _, x in pairs(data.raw["electric-turret"]) do
 		for i = 1, #tur_name.elec do
 			if x.name == tur_name.elec[i] then
@@ -95,8 +100,25 @@ if damage_modif >= 2 then
 			end
 		end
 	end
+	-- for _, x in pairs(data.raw["projectile"]) do
+		-- for i = 1, #projectile_name.cannon then
+			-- if x.name == projectile_name.cannon[i] then
+				-- action.action_delivery.target_effects[j or nil].type or damage.amount
+			-- end
+		-- end
+		-- for i = 1, #projectile_name.rocket then
+			-- if x.name == projectile_name.rocket[i] then
+				
+			-- end
+		-- end
+	-- end
 end
 
+
+
+
+
+---------- acid strain
 local fluid_container = {
 	{"nitric-acid", 1.5}, {"alien-acid", 3}, --bob
 	{"liquid-hydrochloric-acid", 1.5}, {"liquid-hydrofluoric-acid", 1.2}, {"liquid-perchloric-acid", 1.3}, {"liquid-nitric-acid", 1.5}, {"liquid-sulfuric-acid", 1.5} --angel

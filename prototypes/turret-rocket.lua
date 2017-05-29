@@ -213,7 +213,7 @@ data:extend({
   {
     {"gun-turret", 1},
     {"at-rocket-turret-mk1", 1},
-    {"processing-unit", 3}
+    {"electronic-circuit", 4}
   },
   result = "at-rocket-turret-mk2",
 },

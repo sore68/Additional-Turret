@@ -1,6 +1,35 @@
 data:extend({
 {
 	type = "ammo",
+	name = "small-coal-cannon-shell",
+	icon = "__Additional-Turret__/graphics/icon/ammo-cannon-c-1-icon.png",
+	flags = {"goes-to-main-inventory"},
+	ammo_type =
+	{
+		category = "cannon-shell",
+		action =
+		{
+			type = "direct",
+			action_delivery =
+			{
+				type = "projectile",
+				projectile = "small-coal-cannon-shell",
+				starting_speed = 1,
+				source_effects =
+				{
+					type = "create-explosion",
+					entity_name = "explosion"
+				},
+			}
+		},
+	},
+	subgroup = "ammo",
+	order = "d[cannon-shell]-c[basic]-a[basic-coal]",
+	magazine_size = 4,
+	stack_size = 100
+},
+{
+	type = "ammo",
 	name = "small-cannon-shell",
 	icon = "__Additional-Turret__/graphics/icon/ammo-cannon-n-1-icon.png",
 	flags = {"goes-to-main-inventory"},
@@ -24,7 +53,7 @@ data:extend({
 		},
 	},
 	subgroup = "ammo",
-	order = "d[cannon-shell]-c[basic]-a[basic]",
+	order = "d[cannon-shell]-c[basic]-b[basic]",
 	magazine_size = 4,
 	stack_size = 100
 },
@@ -53,7 +82,7 @@ data:extend({
 		},
 	},
 	subgroup = "ammo",
-	order = "d[cannon-shell]-c[basic]-b[explosive]",
+	order = "d[cannon-shell]-c[basic]-c[explosive]",
 	magazine_size = 4,
 	stack_size = 100
 },
@@ -82,7 +111,7 @@ data:extend({
 		},
 	},
 	subgroup = "ammo",
-	order = "d[cannon-shell]-c[basic]-c[cluster]",
+	order = "d[cannon-shell]-c[basic]-d[cluster]",
 	magazine_size = 4,
 	stack_size = 75
 },
@@ -151,6 +180,35 @@ data:extend({
 
 {
 	type = "ammo",
+	name = "small-coal-rocket",
+	icon = "__Additional-Turret__/graphics/icon/ammo-rocket-c-1-icon.png",
+	flags = {"goes-to-main-inventory"},
+	ammo_type =
+	{
+		category = "rocket",
+		action =
+		{
+			type = "direct",
+			action_delivery =
+			{
+				type = "projectile",
+				projectile = "small-coal-rocket",
+				starting_speed = 0.4,
+				source_effects =
+				{
+					type = "create-entity",
+					entity_name = "explosion-hit"
+				}
+			}
+		}
+	},
+	subgroup = "ammo",
+	order = "d[rocket-launcher]-c[basic]-a[basic]",
+	magazine_size = 4,
+	stack_size = 100
+},
+{
+	type = "ammo",
 	name = "small-rocket",
 	icon = "__Additional-Turret__/graphics/icon/ammo-rocket-n-1-icon.png",
 	flags = {"goes-to-main-inventory"},
@@ -174,7 +232,7 @@ data:extend({
 		}
 	},
 	subgroup = "ammo",
-	order = "d[rocket-launcher]-c[basic]-a[basic]",
+	order = "d[rocket-launcher]-c[basic]-b[basic]",
 	magazine_size = 4,
 	stack_size = 100
 },
@@ -203,7 +261,7 @@ data:extend({
 		}
 	},
 	subgroup = "ammo",
-	order = "d[rocket-launcher]-c[basic]-b[explosive]",
+	order = "d[rocket-launcher]-c[basic]-c[explosive]",
 	magazine_size = 4,
 	stack_size = 100
 },
@@ -234,7 +292,7 @@ data:extend({
 		}
 	},
 	subgroup = "ammo",
-	order = "d[rocket-launcher]-c[basic]-c[multiple]",
+	order = "d[rocket-launcher]-c[basic]-d[multiple]",
 	magazine_size = 4,
 	stack_size = 75
 },

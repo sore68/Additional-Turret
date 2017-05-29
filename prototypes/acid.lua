@@ -1,10 +1,12 @@
 require "util"
 local math3d = require "math3d"
 
-local acid_damage_per_tick = 55 / 60
-local flamethrower_stream_on_hit_damage = 1
-local acid_small_damage_per_tick = 20 / 60
-local fire_small_damage_per_tick = 15 / 60
+local acid_sticker_damage_per_tick = 100 / 60
+local acid_frame_damage_per_tick = 13 / 60
+local acid_tree_damage_per_tick = 20 / 60
+local flamethrower_stream_on_hit_damage = 3
+local acid_small_damage_per_tick = 8 / 60
+local fire_small_damage_per_tick = 7 / 60
 
 
 local function make_color(r_,g_,b_,a_)
@@ -608,35 +610,33 @@ data:extend({
 	type = "fire",
 	name = "acid-flame",
 	flags = {"placeable-off-grid", "not-on-map"},
-	duration = 600,
-	fade_away_duration = 600,
-	spread_duration = 600,
-	start_scale = 0.20,
-	end_scale = 1.0,
 	color = {r=0, g=0.5, b=0.7, a=0.9},
-	damage_per_tick = {amount = acid_damage_per_tick, type = "sore-acid"},
+	damage_per_tick = {amount = acid_frame_damage_per_tick, type = "sore-acid"},
+	maximum_damage_multiplier = 6,
+	damage_multiplier_increase_per_added_fuel = 1,
+	damage_multiplier_decrease_per_tick = 0.005,
 	
-	spawn_entity = "acid-flame-on-tree",
+	spawn_entity = "fire-flame-on-tree",
 	
 	spread_delay = 300,
 	spread_delay_deviation = 180,
 	maximum_spread_count = 100,
-	initial_lifetime = 600,
 	
 	flame_alpha = 0.35,
 	flame_alpha_deviation = 0.05,
 	
-	emissions_per_tick = 0.01,
+	emissions_per_tick = 0.005,
 	
 	add_fuel_cooldown = 10,
-	increase_duration_cooldown = 10,
-	increase_duration_by = 20,
 	fade_in_duration = 30,
 	fade_out_duration = 30,
 	
-	lifetime_increase_by = 20,
-	lifetime_increase_cooldown = 10,
+	initial_lifetime = 120,
+	lifetime_increase_by = 150,
+	lifetime_increase_cooldown = 4,
+	maximum_lifetime = 1800,
 	delay_between_initial_flames = 10,
+	--initial_flame_count = 1,
 	burnt_patch_lifetime = 1800,
 	
 	on_fuel_added_action =
@@ -980,7 +980,7 @@ data:extend({
 	name = "acid-flame-on-tree",
 	flags = {"placeable-off-grid", "not-on-map"},
 
-	damage_per_tick = {amount = acid_damage_per_tick, type = "sore-acid"},
+	damage_per_tick = {amount = acid_tree_damage_per_tick, type = "sore-acid"},
 	
 	spawn_entity = "fire-flame-on-tree",
 	maximum_spread_count = 100,
@@ -1122,7 +1122,7 @@ data:extend({
 	inventory_size = 1,
 	automated_ammo_count = 10,
 	attacking_animation_fade_out = 10,
-    turret_base_has_direction = true,
+		turret_base_has_direction = true,
 	
 	resistances =
 	{
@@ -1594,10 +1594,10 @@ data:extend({
 		shift = math3d.vector2.mul({-0.078125, -1.8125}, 0.1),
 	},
 	
-	duration_in_ticks = 25 * 60,
+	duration_in_ticks = 15 * 60,
 	target_movement_modifier = 0.6,
-	damage_per_tick = { amount = acid_damage_per_tick , type = "sore-acid" },
-	spread_acid_entity = "acid-flame-on-tree",	
+	damage_per_tick = { amount = acid_sticker_damage_per_tick , type = "sore-acid" },
+	spread_acid_entity = "acid-flame-on-tree",
 	acid_spread_cooldown = 30,
 	acid_spread_radius = 0.75,
 },
@@ -1834,14 +1834,14 @@ data:extend({
 --item
 data:extend({
 {
-  type = "item",
-  name = "at-acidthrower-turret",
-  icon = "__Additional-Turret__/graphics/icon/turret-acidthrower-icon.png",
-  flags = {"goes-to-quickbar"},
-  subgroup = "defensive-structure",
-  order = "b[turret]-a[flamethrower-turret]-a[at-acidthrower-turret]",
-  place_result = "at-acidthrower-turret",
-  stack_size = 50,
+	type = "item",
+	name = "at-acidthrower-turret",
+	icon = "__Additional-Turret__/graphics/icon/turret-acidthrower-icon.png",
+	flags = {"goes-to-quickbar"},
+	subgroup = "defensive-structure",
+	order = "b[turret]-c[flamethrower-turret]-a[at-acidthrower-turret]",
+	place_result = "at-acidthrower-turret",
+	stack_size = 50,
 },
 })
 
@@ -1849,17 +1849,17 @@ data:extend({
 --recipe
 data:extend({
 {
-  type = "recipe",
-  name = "at-acidthrower-turret",
-  enabled = false,
-  energy_required = 10,
-  ingredients =
-  {
-    {"steel-plate", 30},
-    {"iron-gear-wheel", 15},
-    {"pipe", 10},
-    {"engine-unit", 5}
-  },
-  result = "at-acidthrower-turret",
+	type = "recipe",
+	name = "at-acidthrower-turret",
+	enabled = false,
+	energy_required = 10,
+	ingredients =
+	{
+		{"steel-plate", 30},
+		{"iron-gear-wheel", 15},
+		{"pipe", 10},
+		{"engine-unit", 5}
+	},
+	result = "at-acidthrower-turret",
 },
 })
