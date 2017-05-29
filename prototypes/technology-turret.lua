@@ -20,75 +20,6 @@ end
 
 local ingredients_list = {{"science-pack-1", 1}, {"science-pack-2", 1}, {"science-pack-3", 1}, {"military-science-pack", 1}, {"high-tech-science-pack", 1}, {"space-science-pack", 1}}
 
-function turret_unlock_1(inputs)
-return
-{
-	type = "technology",
-	name = inputs.name,
-	icon_size = 128,
-	icon = inputs.icon,
-	effects =
-	{
-		{
-			type = "unlock-recipe",
-			recipe = inputs.recipe,
-		}
-	},
-	prerequisites = inputs.prerequisites,
-	unit =
-	{
-		count = inputs.count,
-		ingredients =
-		{
-			{"science-pack-1", 1},
-			{"science-pack-2", 1},
-			{"science-pack-3", 1},
-			{"military-science-pack", 1},
-		},
-		time = inputs.time,
-	},
-	upgrade = true,
-	order = inputs.order,
-}
-end
-
-function turret_unlock_2(inputs)
-return
-{
-	type = "technology",
-	name = inputs.name,
-	icon_size = 128,
-	icon = inputs.icon,
-	effects =
-	{
-		{
-			type = "unlock-recipe",
-			recipe = inputs.recipe_1,
-		},
-		{
-			type = "unlock-recipe",
-			recipe = inputs.recipe_2,
-		}
-	},
-	prerequisites = inputs.prerequisites,
-	unit =
-	{
-		count = inputs.count,
-		ingredients =
-		{
-			{"science-pack-1", 2},
-			{"science-pack-2", 1},
-		},
-		time = inputs.time,
-	},
-	upgrade = true,
-	order = inputs.order,
-}
-end
-
-
-
-ingredients_list = {{"science-pack-1", 1}, {"science-pack-2", 1}, {"science-pack-3", 1}, {"military-science-pack", 1}, {"high-tech-science-pack", 1}, {"space-science-pack", 1}}
 data:extend({
 turret_unlock{name = "turret-mk1-unlock", icon = "__Additional-Turret__/graphics/technology/turret-mk1-tech.png",
 	effects = {{type = "unlock-recipe", recipe = "at-cannon-turret-mk1"},
@@ -96,7 +27,7 @@ turret_unlock{name = "turret-mk1-unlock", icon = "__Additional-Turret__/graphics
 		{type = "unlock-recipe", recipe = "small-coal-cannon-shell"},
 		{type = "unlock-recipe", recipe = "small-coal-rocket"}},
 	prerequisites = {"turrets"}, 
-	count = 200, ingredients = {ingredients_list[1], ingredients_list[2], ingredients_list[4]}, time = 60, order = "e-c-c-a"},
+	count = 100, ingredients = {ingredients_list[1], ingredients_list[2], ingredients_list[4]}, time = 60, order = "e-c-c-a"},
 
 turret_unlock{name = "turret-mk2-unlock", icon = "__Additional-Turret__/graphics/technology/turret-mk2-tech.png",
 	effects = {{type = "unlock-recipe", recipe = "at-cannon-turret-mk2"},
